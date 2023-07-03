@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+}
+
+
+#myCanvas {
+    image-rendering: pixelated;
+}
