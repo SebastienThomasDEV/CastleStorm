@@ -3,4 +3,4 @@
 my tiny shooter game
 
 ### utils:
-https://dev.to/martyhimmel/moving-a-sprite-sheet-character-with-javascript-3adg
+https://dev.to/martyhimmel/moving-a-sprite-sheet-character-with-javascript-3adg // movement fluide et animation du personnage
