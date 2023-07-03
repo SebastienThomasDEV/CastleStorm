@@ -20,24 +20,6 @@ export default class Projectile {
         this.y = this.y + this.velocity.y;
     }
 
-    // update(canvas, cursor, character) {
-    //     if (this.isFired) {
-    //         let angle = Math.atan2(cursor.y - character.y, character.x - this.x)
-    //         if (cursor.x > this.x) {
-    //             this.x += this.speed;
-    //             this.y += angle * this.speed;
-    //         } else if (cursor.x < this.x) {
-    //             this.x -= this.speed;
-    //             this.y -= angle * this.speed;
-    //         }
-    //         if (this.x > canvas.width || this.x === 0) {
-    //             this.isFired = false;
-    //             this.x = null;
-    //             this.y = null;
-    //         }
-    //     }
-    // }
-
 
 
 }

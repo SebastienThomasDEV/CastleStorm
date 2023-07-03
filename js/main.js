@@ -1,7 +1,7 @@
 import Character from "./Character.js";
 import Projectile from "./Projectile.js";
 import Enemy from "./Enemy.js";
-import {debounce, clearCanvas } from "./Utils.js";
+import {debounce, clearCanvas} from "./Utils.js";
 
 
 const canvas = document.getElementById("myCanvas");
@@ -21,8 +21,8 @@ document.addEventListener("click", (e) => {
     }
     projectiles.push(new Projectile(character.x, character.y, velocity, 5, "red"));
 });
-document.addEventListener("keydown", debounce(move, 10));
-document.addEventListener("keyup", debounce(move, 10));
+document.addEventListener("keydown", move);
+document.addEventListener("keyup", move);
 
 
 function spawnEnemies() {
@@ -45,7 +45,9 @@ function spawnEnemies() {
         enemies.push(new Enemy(x, y, radius, "green", velocity));
     }, 2000);
 }
+
 function move(e) {
+    console.log(e.code);
     if (e.code === "KeyA") { // Flèche gauche
         character.targetX -= 10;
     } else if (e.code === "KeyD") { // Flèche droite
@@ -57,13 +59,27 @@ function move(e) {
     }
 }
 
-let lastFrame = Date.now();
+const throttleFunc = (func, interval) => {
+    let shouldFire = true;
+    return function () {
+        if (shouldFire) {
+            func();
+            shouldFire = false;
+            setTimeout(() => {
+                shouldFire = true;
+            }, interval)
+        }
+    }
+}
+const optimisedTriggerHandler = throttleFunc(move, 100);
+
+
 function animate() {
     requestAnimationFrame(animate);
     clearCanvas(context, canvas);
     scoreElement.innerHTML = score.toString();
     character.draw(context);
-    lastFrame = character.update(context, lastFrame);
+    character.update(context);
     projectiles.forEach((projectile) => {
         projectile.update(context);
     });

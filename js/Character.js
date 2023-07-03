@@ -16,45 +16,12 @@ export default class Character {
         context.fill();
     }
 
-    update(context, lastFrame) {
+    update(context) {
         this.draw(context);
-        const currentFrame = Date.now();
-        const deltaTime = (currentFrame - lastFrame) / 1000;
-        const dx = this.targetX - this.x;
-        const dy = this.targetY - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDistance = this.speed * deltaTime;
-
-        if (distance <= maxDistance) {
-            this.x = this.targetX;
-            this.y = this.targetY;
-        } else {
-            const ratio = maxDistance / distance;
-            this.x += dx * ratio;
-            this.y += dy * ratio;
-        }
-        return currentFrame;
+        this.x = this.x + this.velocity.x;
     }
 
-    // update(lastFrame) {
-    //     const currentFrame = Date.now();
-    //     const deltaTime = (currentFrame - lastFrame) / 1000;
-    //     const dx = this.targetX - this.x;
-    //     const dy = this.targetY - this.y;
-    //     const distance = Math.sqrt(dx * dx + dy * dy);
-    //     const maxDistance = this.speed * deltaTime;
-    //
-    //     if (distance <= maxDistance) {
-    //         this.x = this.targetX;
-    //         this.y = this.targetY;
-    //     } else {
-    //         const ratio = maxDistance / distance;
-    //         this.x += dx * ratio;
-    //         this.y += dy * ratio;
-    //     }
-    //
-    //      return currentFrame;
-    // }
+
 
 
 }
