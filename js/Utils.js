@@ -1,17 +1,20 @@
-export function debounce(func, wait, immediate) {
+export function debounce(cb, interval, immediate) {
     let timeout;
-    return function () {
-        const context = this;
-        const args = arguments;
-        const later = () => {
+
+    return function() {
+        let context = this, args = arguments;
+        let later = function() {
             timeout = null;
-            if (!immediate) func.apply(context, args);
+            if (!immediate) cb.apply(context, args);
         };
+
         const callNow = immediate && !timeout;
+
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args)
-    }
+        timeout = setTimeout(later, interval);
+
+        if (callNow) cb.apply(context, args);
+    };
 }
 
 export function clearCanvas(context, canvas, score) {
