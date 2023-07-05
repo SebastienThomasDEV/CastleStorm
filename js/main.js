@@ -28,11 +28,22 @@ const faceDirections = {
     left: faceLeft,
     down: faceDown
 }
+let keyPresses = {};
+window.addEventListener('keydown', keyDownListener);
+function keyDownListener(event) {
+    keyPresses[event.key] = true;
+}
+
+window.addEventListener('keyup', keyUpListener);
+function keyUpListener(event) {
+    keyPresses[event.key] = false;
+}
+
 const character = new Character(canvas.width / 2, canvas.height / 2, 10, "blue",  faceDirections.down);
 
 document.addEventListener("click", (e) => shoot(e, character, projectiles));
-document.addEventListener("keydown", (e) => move(e, character, faceDirections));
-document.addEventListener("keyup", (e) => move(e, character, faceDirections));
+// document.addEventListener("keydown", (e) => move(e, character, faceDirections));
+// document.addEventListener("keyup", (e) => move(e, character, faceDirections));
 
 
 function spawnEnemies() {
@@ -64,6 +75,7 @@ function animate() {
     clearCanvas(context, canvas);
     character.draw(context, character.faceDirection, 2);
     character.update(context);
+    move(character, faceDirections, keyPresses);
     projectiles.forEach((projectile) => {
         projectile.update(context);
     });

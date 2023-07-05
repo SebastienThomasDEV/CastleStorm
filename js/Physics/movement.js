@@ -1,15 +1,16 @@
-export function move(e, character, faceDirections) {
-    if (e.code === "KeyA") { // Flèche gauche
-        character.targetX -= 10;
-        character.faceDirection = faceDirections.left;
-    } else if (e.code === "KeyD") { // Flèche droite
-        character.targetX += 10;
-        character.faceDirection = faceDirections.right;
-    } else if (e.code === "KeyW") { // Flèche haut
-        character.targetY -= 10;
+export function move(character, faceDirections, keyPresses) {
+    if (keyPresses.z) {
+        character.targetY -= character.speed;
         character.faceDirection = faceDirections.up;
-    } else if (e.code === "KeyS") { // Flèche bas
-        character.targetY += 10;
+    } else if (keyPresses.s) {
+        character.targetY += character.speed;
         character.faceDirection = faceDirections.down;
+    }
+    if (keyPresses.q) {
+        character.targetX -= character.speed;
+        character.faceDirection = faceDirections.left;
+    } else if (keyPresses.d) {
+        character.targetX += character.speed;
+        character.faceDirection = faceDirections.right;
     }
 }

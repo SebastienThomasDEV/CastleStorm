@@ -3,7 +3,7 @@ export default class Character {
         this.x = x;
         this.y = y;
         this.radius = radius;
-        this.speed = 80;
+        this.speed = 5;
         this.color = color;
         this.targetX = this.x;
         this.targetY = this.y;
