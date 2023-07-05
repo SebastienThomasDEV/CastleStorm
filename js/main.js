@@ -4,8 +4,7 @@ import {loadImages} from "./Loader.js";
 import {shoot} from "./Physics/shoot.js";
 import {clearCanvas} from "./Map/CanvaMethods.js";
 import {move} from "./Physics/movement.js";
-import {debounce} from "./Utils/Utils.js";
-import {checkCollision} from "./Physics/collision.js";
+import {keyDownListener, keyUpListener} from "./Utils/Utils.js";
 
 
 const canvas = document.getElementById("myCanvas");
@@ -29,21 +28,12 @@ const faceDirections = {
     down: faceDown
 }
 let keyPresses = {};
-window.addEventListener('keydown', keyDownListener);
-function keyDownListener(event) {
-    keyPresses[event.key] = true;
-}
-
-window.addEventListener('keyup', keyUpListener);
-function keyUpListener(event) {
-    keyPresses[event.key] = false;
-}
-
 const character = new Character(canvas.width / 2, canvas.height / 2, 10, "blue",  faceDirections.down);
+window.addEventListener('keydown', (e)=>keyDownListener(e, keyPresses));
+window.addEventListener('keyup', (e)=>keyUpListener(e, keyPresses));
+
 
 document.addEventListener("click", (e) => shoot(e, character, projectiles));
-// document.addEventListener("keydown", (e) => move(e, character, faceDirections));
-// document.addEventListener("keyup", (e) => move(e, character, faceDirections));
 
 
 function spawnEnemies() {
