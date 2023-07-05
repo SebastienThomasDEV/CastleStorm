@@ -10,11 +10,10 @@ export default class Character {
         this.faceDirection = faceDirection;
     }
 
-    draw(context, faceDirection) {
+    draw(context, faceDirection, scale) {
         if (faceDirection) {
             this.faceDirection = faceDirection;
         }
-        let scale = 2;
         context.drawImage(this.faceDirection, this.x, this.y, this.faceDirection.width * scale, this.faceDirection.height * scale);
 
     }

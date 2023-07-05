@@ -1,7 +1,11 @@
-import Character from "./Character.js";
-import Projectile from "./Projectile.js";
-import Enemy from "./Enemy.js";
-import {debounce, clearCanvas} from "./Utils.js";
+import Character from "./Entities/Character.js";
+import Enemy from "./Entities/Enemy.js";
+import {loadImages} from "./Loader.js";
+import {shoot} from "./Physics/shoot.js";
+import {clearCanvas} from "./Map/CanvaMethods.js";
+import {move} from "./Physics/movement.js";
+import {debounce} from "./Utils/Utils.js";
+import {checkCollision} from "./Physics/collision.js";
 
 
 const canvas = document.getElementById("myCanvas");
@@ -18,29 +22,17 @@ faceUp.src = "./img/faceup.png";
 faceRight.src = "./img/faceright.png";
 faceLeft.src = "./img/faceleft.png";
 faceDown.src = "./img/facedown.png";
-
-
-
 const faceDirections = {
     up: faceUp,
     right: faceRight,
     left: faceLeft,
     down: faceDown
 }
-let score = 0;
-let scoreElement = document.getElementById("score");
 const character = new Character(canvas.width / 2, canvas.height / 2, 10, "blue",  faceDirections.down);
 
-document.addEventListener("click", (e) => {
-    const angle = Math.atan2(e.clientY - character.y, e.clientX - character.x);
-    const velocity = {
-        x: Math.cos(angle) * 5,
-        y: Math.sin(angle) * 5
-    }
-    projectiles.push(new Projectile(character.x, character.y, velocity, 5, "red"));
-});
-document.addEventListener("keydown", move);
-document.addEventListener("keyup", move);
+document.addEventListener("click", (e) => shoot(e, character, projectiles));
+document.addEventListener("keydown", (e) => move(e, character, faceDirections));
+document.addEventListener("keyup", (e) => move(e, character, faceDirections));
 
 
 function spawnEnemies() {
@@ -64,29 +56,13 @@ function spawnEnemies() {
     }, 2000);
 }
 
-function move(e) {
-    console.log(e.code);
-    if (e.code === "KeyA") { // Flèche gauche
-        character.targetX -= 10;
-        character.faceDirection = faceDirections.left;
-    } else if (e.code === "KeyD") { // Flèche droite
-        character.targetX += 10;
-        character.faceDirection = faceDirections.right;
-    } else if (e.code === "KeyW") { // Flèche haut
-        character.targetY -= 10;
-        character.faceDirection = faceDirections.up;
-    } else if (e.code === "KeyS") { // Flèche bas
-        character.targetY += 10;
-        character.faceDirection = faceDirections.down;
-    }
-}
+
 
 
 function animate() {
     requestAnimationFrame(animate);
     clearCanvas(context, canvas);
-    scoreElement.innerHTML = score.toString();
-    character.draw(context, character.faceDirection);
+    character.draw(context, character.faceDirection, 2);
     character.update(context);
     projectiles.forEach((projectile) => {
         projectile.update(context);
@@ -98,21 +74,11 @@ function animate() {
             if (distance - enemy.radius - projectile.radius < 1) {
                 enemies.splice(index, 1);
                 projectiles.splice(projectileIndex, 1);
-                score++;
             }
         });
     });
 }
 
-let imgLoaded = 0;
-const imgToLoad = Object.keys(faceDirections).length;
-for (let faceDirection in faceDirections) {
-    faceDirections[faceDirection].onload = () => {
-        imgLoaded++;
-        if (imgLoaded === imgToLoad) {
-            animate();
-        }
-    }
-}
+loadImages(faceDirections, animate)
 spawnEnemies();
 
