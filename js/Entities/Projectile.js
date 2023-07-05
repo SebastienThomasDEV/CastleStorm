@@ -1,17 +1,15 @@
 export default class Projectile {
-    constructor(x, y, velocity, radius, color) {
+    constructor(x, y, velocity, radius, color, image) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.color = color;
         this.velocity = velocity;
+        this.image = image;
     }
 
     draw(context) {
-        context.beginPath();
-        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        context.fillStyle = this.color;
-        context.fill();
+        context.drawImage(this.image, this.x, this.y, -this.image.width/2, -this.image.height/2);
     }
 
     update(context) {
