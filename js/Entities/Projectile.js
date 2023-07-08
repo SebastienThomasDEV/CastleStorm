@@ -9,7 +9,7 @@ export default class Projectile {
     }
 
     draw(context) {
-        context.drawImage(this.image, this.x, this.y, -this.image.width/2, -this.image.height/2);
+        context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
     }
 
     update(context) {

@@ -9,7 +9,3 @@ body {
     font-size: 1.5rem;
 }
 
-
-#myCanvas {
-    image-rendering: pixelated;
-}
