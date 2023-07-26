@@ -16,7 +16,6 @@ async function loadImage(path) {
         await image.decode();
     } catch (error) {
         console.log(error);
-
         return null;
     }
 

@@ -3,7 +3,7 @@ import Enemy from "./Entities/Enemy.js";
 import {loadImages} from "./Loader.js";
 import {shoot} from "./Physics/shoot.js";
 import {clearCanvas} from "./Map/CanvaMethods.js";
-import {move} from "./Physics/movement.js";
+import {move, dash} from "./Physics/movement.js";
 import {keyDownListener, keyUpListener} from "./Utils/Utils.js";
 
 
@@ -14,13 +14,12 @@ canvas.height = window.innerHeight
 context.imageSmoothingEnabled = false;
 const projectiles = [];
 const enemies = [];
-let faceUp, faceRight, faceLeft, faceDown, arrow;
-[faceUp, faceRight, faceLeft, faceDown, arrow] = await loadImages([
+let faceUp, faceRight, faceLeft, faceDown;
+[faceUp, faceRight, faceLeft, faceDown] = await loadImages([
     "./assets/img/character/faceup.png",
     "./assets/img/character/faceright.png",
     "./assets/img/character/faceleft.png",
     "./assets/img/character/facedown.png",
-    "./assets/img/projectile/arrow1.png",
 ]);
 
 const faceDirections = {
@@ -33,10 +32,7 @@ let keyPresses = {};
 const character = new Character(canvas.width / 2, canvas.height / 2, 10, "blue", faceDirections.down);
 window.addEventListener('keydown', (e) => keyDownListener(e, keyPresses));
 window.addEventListener('keyup', (e) => keyUpListener(e, keyPresses));
-
-
-document.addEventListener("click", (e) => shoot(e, character, projectiles, arrow));
-
+document.addEventListener("click", (e) => shoot(e, character, projectiles));
 
 function spawnEnemies() {
     setInterval(() => {
@@ -55,7 +51,7 @@ function spawnEnemies() {
             x: Math.cos(angle),
             y: Math.sin(angle)
         }
-        enemies.push(new Enemy(x, y, radius, "green", velocity));
+        enemies.push(new Enemy(x, y, radius, "green", velocity, 5));
     }, 2000);
 }
 
@@ -69,6 +65,7 @@ function animate() {
         character.draw(context, character.faceDirection, 2);
         character.update(context);
         move(character, faceDirections, keyPresses);
+        dash(character, faceDirections, keyPresses);
         projectiles.forEach((projectile) => {
             projectile.update(context);
         });
@@ -77,19 +74,23 @@ function animate() {
             projectiles.forEach((projectile, projectileIndex) => {
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {
-                    enemies.splice(index, 1);
+                    enemy.health -= projectile.damage;
                     projectiles.splice(projectileIndex, 1);
+                    enemy.color = "red";
+                    setTimeout(() => {
+                        enemy.color = "green"
+                    }, 100);
+                    if (enemy.health <= 0) {
+                        enemies.splice(index, 1);
+                    }
                 }
             });
         });
     } catch (e) {
-        console.log(e);
         cancelAnimationFrame(requestId);
     }
 }
 
 animate();
-
-
 spawnEnemies();
 

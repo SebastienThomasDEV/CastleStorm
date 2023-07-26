@@ -4,7 +4,6 @@ export default class Character {
         this.y = y;
         this.radius = radius;
         this.speed = 5;
-        this.color = color;
         this.targetX = this.x;
         this.targetY = this.y;
         this.faceDirection = faceDirection;
@@ -39,9 +38,6 @@ export default class Character {
                 this.y += velocity.y;
             }
         }
-
-
-
     }
 
 

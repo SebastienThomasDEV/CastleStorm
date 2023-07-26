@@ -14,3 +14,22 @@ export function move(character, faceDirections, keyPresses) {
         character.faceDirection = faceDirections.right;
     }
 }
+
+export function dash(character, faceDirections, keyPresses) {
+    if (keyPresses[" "]) {
+        switch (character.faceDirection) {
+            case faceDirections.up:
+                character.targetY -= character.speed;
+                break;
+            case faceDirections.down:
+                character.targetY += character.speed;
+                break;
+            case faceDirections.left:
+                character.targetX -= character.speed;
+                break;
+            case faceDirections.right:
+                character.targetX += character.speed;
+                break;
+        }
+    }
+}
