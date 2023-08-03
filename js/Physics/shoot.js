@@ -7,5 +7,10 @@ export function shoot(e, character, projectiles) {
         y: Math.sin(angle) * 20
     }
 
-    projectiles.push(new Projectile(character.x, character.y, velocity, 5, "red"));
+
+    projectiles.push(
+        new Projectile(
+            character.x,
+            character.y,
+                velocity, 5, "red"));
 }

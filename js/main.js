@@ -8,18 +8,29 @@ import {keyDownListener, keyUpListener} from "./Utils/Utils.js";
 
 
 const canvas = document.getElementById("myCanvas");
+const startMenu = document.getElementById("startMenu");
+const startButton = document.getElementById("startButton");
+canvas.style.display = "none"
+startButton.addEventListener("click", () => {
+    startMenu.style.display = "none";
+    canvas.style.display = "block";
+    animate();
+})
+
 const context = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight
 context.imageSmoothingEnabled = false;
 const projectiles = [];
 const enemies = [];
-let faceUp, faceRight, faceLeft, faceDown;
-[faceUp, faceRight, faceLeft, faceDown] = await loadImages([
+let faceUp, faceRight, faceLeft, faceDown, heart_full, heart_empty;
+[faceUp, faceRight, faceLeft, faceDown, heart_full, heart_empty] = await loadImages([
     "./assets/img/character/faceup.png",
     "./assets/img/character/faceright.png",
     "./assets/img/character/faceleft.png",
     "./assets/img/character/facedown.png",
+    "./assets/img/character/heart_full.png",
+    "./assets/img/character/heart_empty.png"
 ]);
 
 const faceDirections = {
@@ -36,7 +47,7 @@ document.addEventListener("click", (e) => shoot(e, character, projectiles));
 
 function spawnEnemies() {
     setInterval(() => {
-        const radius = 10;
+        const radius = Math.random() * (30 - 4) + 4;
         let x;
         let y;
         if (Math.random() < 0.5) {
@@ -60,10 +71,11 @@ let requestId = 0;
 
 function animate() {
     try {
+
         requestId = requestAnimationFrame(animate);
         clearCanvas(context, canvas);
-        character.draw(context, character.faceDirection, 2);
-        character.update(context);
+        character.draw(context, character.faceDirection, heart_full, heart_empty);
+        character.update(context, heart_full, heart_empty);
         move(character, faceDirections, keyPresses);
         dash(character, faceDirections, keyPresses);
         projectiles.forEach((projectile) => {
@@ -71,6 +83,21 @@ function animate() {
         });
         enemies.forEach((enemy, index) => {
             enemy.update(context);
+            const distance = Math.hypot(character.x - enemy.x, character.y - enemy.y);
+            if (distance - enemy.radius - character.radius < 1) {
+                if (!character.isHit) {
+                    character.health -= 1;
+                    character.isHit = true;
+
+                    setTimeout(() => {
+                        character.isHit = false;
+                    }, 1000);
+                }
+                if (character.health <= 0) {
+                    cancelAnimationFrame(requestId);
+                    canvas.style.display = "none";
+                }
+            }
             projectiles.forEach((projectile, projectileIndex) => {
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {
@@ -91,6 +118,6 @@ function animate() {
     }
 }
 
-animate();
-spawnEnemies();
+// animate();
+// spawnEnemies();
 
