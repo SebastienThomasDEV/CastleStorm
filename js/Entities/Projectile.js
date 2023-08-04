@@ -5,7 +5,6 @@ export default class Projectile {
         this.radius = radius;
         this.velocity = velocity;
         this.color = color;
-        this.damage = 1;
     }
 
     draw(context) {

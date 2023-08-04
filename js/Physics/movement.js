@@ -15,21 +15,21 @@ export function move(character, faceDirections, keyPresses) {
     }
 }
 
-export function dash(character, faceDirections, keyPresses) {
-    if (keyPresses[" "]) {
-        switch (character.faceDirection) {
-            case faceDirections.up:
-                character.targetY -= character.speed;
-                break;
-            case faceDirections.down:
-                character.targetY += character.speed;
-                break;
-            case faceDirections.left:
-                character.targetX -= character.speed;
-                break;
-            case faceDirections.right:
-                character.targetX += character.speed;
-                break;
-        }
-    }
-}
+// export function dash(character, faceDirections, keyPresses) {
+//     if (keyPresses[" "]) {
+//         switch (character.faceDirection) {
+//             case faceDirections.up:
+//                 character.targetY -= character.speed;
+//                 break;
+//             case faceDirections.down:
+//                 character.targetY += character.speed;
+//                 break;
+//             case faceDirections.left:
+//                 character.targetX -= character.speed;
+//                 break;
+//             case faceDirections.right:
+//                 character.targetX += character.speed;
+//                 break;
+//         }
+//     }
+// }

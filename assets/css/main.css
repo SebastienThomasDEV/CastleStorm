@@ -9,3 +9,14 @@ body {
     font-size: 1.5rem;
 }
 
+.background {
+    background-image: url("../img/background.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.sideMenu {
+    background-image: url("../img/bricks.png");
+    background-repeat: repeat;
+    box-shadow: inset 0px 0px 6px 6px rgba(0, 0, 0, 0.5);
+}
