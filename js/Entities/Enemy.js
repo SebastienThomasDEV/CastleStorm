@@ -1,11 +1,15 @@
 export default class Enemy {
-    constructor(x, y, radius, color, velocity, health) {
+    constructor(x, y, radius, color, health, velocity, speed) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.color = color;
-        this.velocity = velocity;
         this.health = health;
+        this.velocity = velocity;
+        this.speed = speed;
+        this.dx = 0;
+        this.dy = 0;
+        this.angle = 0;
     }
 
     draw(context) {
@@ -16,11 +20,23 @@ export default class Enemy {
         context.closePath();
     }
 
-    update(context) {
+    update(context, character) {
         this.draw(context);
-        context.fillText(this.health, this.x, this.y - 10)
-        this.x = this.x + this.velocity.x;
-        this.y = this.y + this.velocity.y;
+        this.updateAngle(character);
+        this.updateSpeed();
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+    }
+
+    updateAngle(character) {
+        this.dx = character.x - this.x;
+        this.dy = character.y - this.y;
+        this.angle = Math.atan2(this.dy, this.dx);
+    }
+
+    updateSpeed() {
+        this.velocity.x = Math.cos(this.angle) * this.speed;
+        this.velocity.y = Math.sin(this.angle) * this.speed;
     }
 
 }

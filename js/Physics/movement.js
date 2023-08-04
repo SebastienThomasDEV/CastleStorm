@@ -1,35 +1,37 @@
-export function move(character, faceDirections, keyPresses) {
+export function move(character, keyPresses) {
+    // faire que le personnage ne puisse pas sortir de la map
     if (keyPresses.z) {
-        character.targetY -= character.speed;
-        character.faceDirection = faceDirections.up;
+        if (character.targetY > 0) {
+            character.targetY -= character.speed;
+        } else {
+            character.targetY = 0;
+        }
+
     } else if (keyPresses.s) {
-        character.targetY += character.speed;
-        character.faceDirection = faceDirections.down;
+        if (character.targetY < window.innerHeight) {
+            character.targetY += character.speed;
+        } else {
+            character.targetY = window.innerHeight;
+        }
     }
     if (keyPresses.q) {
-        character.targetX -= character.speed;
-        character.faceDirection = faceDirections.left;
+        if (character.targetX > 0) {
+            character.targetX -= character.speed;
+        } else {
+            character.targetX = 0;
+        }
     } else if (keyPresses.d) {
-        character.targetX += character.speed;
-        character.faceDirection = faceDirections.right;
+        if (character.targetX < window.innerWidth) {
+            character.targetX += character.speed;
+        } else {
+            character.targetX = window.innerWidth;
+        }
     }
 }
 
-// export function dash(character, faceDirections, keyPresses) {
-//     if (keyPresses[" "]) {
-//         switch (character.faceDirection) {
-//             case faceDirections.up:
-//                 character.targetY -= character.speed;
-//                 break;
-//             case faceDirections.down:
-//                 character.targetY += character.speed;
-//                 break;
-//             case faceDirections.left:
-//                 character.targetX -= character.speed;
-//                 break;
-//             case faceDirections.right:
-//                 character.targetX += character.speed;
-//                 break;
-//         }
-//     }
-// }
+export function dash(character, keyPresses) {
+    if (keyPresses[" "]) {
+        character.x = character.targetX;
+        character.y = character.targetY;
+    }
+}

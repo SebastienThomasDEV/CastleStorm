@@ -5,7 +5,7 @@ import {loadImages} from "./Loader.js";
 import {spawnEnemies} from "./Physics/spawn.js";
 import {shoot} from "./Physics/shoot.js";
 import {clearCanvas} from "./Map/CanvaMethods.js";
-import {move} from "./Physics/movement.js";
+import {move, dash} from "./Physics/movement.js";
 // import {move, dash} from "./Physics/movement.js";
 import {keyDownListener, keyUpListener} from "./Utils/Utils.js";
 
@@ -36,7 +36,6 @@ let faceUp, faceRight, faceLeft, faceDown, heart_full, heart_empty;
     "./assets/img/character/heart_empty.png"
 ])
 
-const intervalProcess = [];
 
 // On initialise les variables du jeu
 const gameVariables =  {
@@ -76,7 +75,12 @@ const gameVariables =  {
     },
     projectiles: [],
     enemies: [],
-    loots: []
+    loots: [],
+    intervalProcess: [],
+    mousePos: {
+        x: 0,
+        y: 0
+    }
 }
 
 // On ajoute un évènement sur le bouton "Commencez" pour lancer le jeu
@@ -84,21 +88,23 @@ startButton.addEventListener("click", () => {
     // On cache le menu de démarrage et on affiche le canvas
     startMenu.style.display = "none";
     canvas.style.display = "block";
+
     // Apparition du personnage
     gameVariables.character.model = new Character(canvas.width / 2, canvas.height / 2, 10, "blue", gameVariables.character.sprites.body.faceDown);
+
     // On lance le jeu
     gameLoop();
     gameVariables.isLooping = true;
+
     // Apparition des ennemis
-    intervalProcess.push(spawnEnemies(canvas, gameVariables, Enemy));
+    gameVariables.intervalProcess.push(spawnEnemies(canvas, gameVariables, Enemy));
+
+
     // On ajoute des évènements sur les touches du clavier
+    window.onmousemove = (e) => gameVariables.isLooping ? (gameVariables.mousePos.x = e.clientX, gameVariables.mousePos.y = e.clientY) : null;
     window.addEventListener('keydown', (e) => gameVariables.isLooping ? keyDownListener(e, gameVariables.character.keyPresses ) : null);
     window.addEventListener('keyup', (e) => gameVariables.isLooping ? keyUpListener(e, gameVariables.character.keyPresses) : null);
     document.addEventListener("click", (e) => gameVariables.isLooping ? shoot(e, gameVariables.character.model, gameVariables.projectiles) : null);
-    // document.addEventListener("resize", () => {
-    //     canvas.width = window.innerWidth;
-    //     canvas.height = window.innerHeight
-    // });
 })
 
 
@@ -210,10 +216,10 @@ function resetGameVariables(gameVariables) {
     gameVariables.character.attack = 10;
     gameVariables.character.armor = 0;
     gameVariables.isLooping = false;
-    intervalProcess.forEach((interval) => {
+    gameVariables.intervalProcess.forEach((interval) => {
         clearInterval(interval);
     });
-    intervalProcess.length = 0;
+    gameVariables.intervalProcess.length = 0;
 }
 
 
@@ -227,9 +233,12 @@ function gameLoop() {
         clearCanvas(context, canvas);
         drawCharacterStats(context, canvas, gameVariables);
         // On ajoute l'événement de déplacement du personnage
-        move(gameVariables.character.model, gameVariables.character.sprites.body, gameVariables.character.keyPresses);
+        move(gameVariables.character.model, gameVariables.character.keyPresses);
+        // On ajoute la mécanique de dash
+        dash(gameVariables.character.model, gameVariables.character.keyPresses);
+
         // On actualise le personnage
-        gameVariables.character.model.update(context, gameVariables.character.model.viewDirection);
+        gameVariables.character.model.update(context, gameVariables.mousePos);
         // On actualise les projectiles
         gameVariables.projectiles.forEach((projectile) => {
             projectile.update(context);
@@ -258,7 +267,7 @@ function gameLoop() {
         // Pour chaque ennemi
         gameVariables.enemies.forEach((enemy, index) => {
             // On actualise l'ennemi
-            enemy.update(context);
+            enemy.update(context, gameVariables.character.model);
             // On vérifie si le personnage est en collision avec l'ennemi
             const distance = Math.hypot(
                 gameVariables.character.model.x - enemy.x,

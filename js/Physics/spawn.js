@@ -5,21 +5,28 @@ export function spawnEnemies(canvas, gameVariables, EnemyModel) {
         return;
     }
     return setInterval(() => {
-        const radius = Math.random() * 30 + 10;
+        const randomRadius = Math.random() * 30 + 10;
+        const randomSpeed = Math.random() * 2 + 1;
+        const randomColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
+        const randomHealth = Math.random() * 30 + 20;
         let x;
         let y;
         if (Math.random() < 0.5) {
-            x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+            x = Math.random() < 0.5 ? 0 - randomRadius : canvas.width + randomRadius;
             y = Math.random() * canvas.height;
         } else {
             x = Math.random() * canvas.width;
-            y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+            y = Math.random() < 0.5 ? 0 - randomRadius : canvas.height + randomRadius;
         }
-        const angle = Math.atan2(gameVariables.character.model.y - y, gameVariables.character.model.x - x);
-        const velocity = {
-            x: Math.cos(angle) * 10,
-            y: Math.sin(angle) * 10
-        }
-        gameVariables.enemies.push(new EnemyModel(x, y, radius, "blue", velocity, Math.ceil(3 * Math.random())));
-    }, 1000);
+        const enemy = new EnemyModel(
+            x,
+            y,
+            randomRadius,
+            randomColor,
+            randomHealth,
+            { x: 0, y: 0 },
+            randomSpeed,
+        );
+        gameVariables.enemies.push(enemy);
+    }, 3000);
 }
