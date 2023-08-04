@@ -1,10 +1,10 @@
 
 
-export function spawnEnemies(canvas, gameVariables, EnemyModel) {
-    if (gameVariables.isLooping === false) {
+export function spawnEnemies(canvas, game, enemyClass) {
+    if (game.isLooping === false) {
         return;
     }
-    return setInterval(() => {
+    return setInterval((id) => {
         const randomRadius = Math.random() * 30 + 10;
         const randomSpeed = Math.random() * 2 + 1;
         const randomColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
@@ -18,7 +18,7 @@ export function spawnEnemies(canvas, gameVariables, EnemyModel) {
             x = Math.random() * canvas.width;
             y = Math.random() < 0.5 ? 0 - randomRadius : canvas.height + randomRadius;
         }
-        const enemy = new EnemyModel(
+        const enemy = new enemyClass(
             x,
             y,
             randomRadius,
@@ -27,6 +27,6 @@ export function spawnEnemies(canvas, gameVariables, EnemyModel) {
             { x: 0, y: 0 },
             randomSpeed,
         );
-        gameVariables.enemies.push(enemy);
+        game.enemies.push(enemy);
     }, 3000);
 }

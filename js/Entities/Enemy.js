@@ -20,17 +20,17 @@ export default class Enemy {
         context.closePath();
     }
 
-    update(context, character) {
+    update(context, game) {
         this.draw(context);
-        this.updateAngle(character);
+        this.updateAngle(game);
         this.updateSpeed();
         this.x += this.velocity.x;
         this.y += this.velocity.y;
     }
 
-    updateAngle(character) {
-        this.dx = character.x - this.x;
-        this.dy = character.y - this.y;
+    updateAngle(game) {
+        this.dx = game.character.model.x - this.x;
+        this.dy = game.character.model.y - this.y;
         this.angle = Math.atan2(this.dy, this.dx);
     }
 

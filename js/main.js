@@ -1,13 +1,25 @@
 import Character from "./Entities/Character.js";
 import Enemy from "./Entities/Enemy.js";
-import {Loot} from "./Entities/Loot.js";
-import {loadImages} from "./Loader.js";
-import {spawnEnemies} from "./Physics/spawn.js";
-import {shoot} from "./Physics/shoot.js";
-import {clearCanvas} from "./Map/CanvaMethods.js";
-import {move, dash} from "./Physics/movement.js";
-// import {move, dash} from "./Physics/movement.js";
-import {keyDownListener, keyUpListener} from "./Utils/Utils.js";
+import Loot from "./Entities/Loot.js";
+import {game} from "./Core/vars/game.js";
+import {resetGame} from "./Core/functions/reset.js";
+import {drawCharacterHpBar, drawHealthBar, drawXpBar} from "./Core/ui/drawUI.js";
+import {spawnEnemies} from "./Core/physics/spawn.js";
+import {shoot} from "./Core/physics/shoot.js";
+import {move, dash, keyDownListener, keyUpListener} from "./Core/physics/movement.js";
+import {loadImages} from "./Core/Loader.js";
+
+
+function drawGameIU(context, game) {
+    drawXpBar(context, game);
+    drawHealthBar(context, game);
+    drawCharacterHpBar(context, game);
+}
+
+function clearCanvas(context, canvas) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 
 // Initialisation du canvas html et du contexte 2d
 const canvas = document.getElementById("myCanvas");
@@ -25,202 +37,34 @@ canvas.style.display = "none"
 const startMenu = document.getElementById("startMenu");
 const startButton = document.getElementById("startButton");
 
-// On charge les images du jeu
-let faceUp, faceRight, faceLeft, faceDown, heart_full, heart_empty;
-[faceUp, faceRight, faceLeft, faceDown, heart_full, heart_empty] = await loadImages([
-    "./assets/img/character/faceup.png",
-    "./assets/img/character/faceright.png",
-    "./assets/img/character/faceleft.png",
-    "./assets/img/character/facedown.png",
-    "./assets/img/character/heart_full.png",
-    "./assets/img/character/heart_empty.png"
-])
-
-
-// On initialise les variables du jeu
-const gameVariables =  {
-    isLooping: false,
-    playerLevel: {
-        cap: 200,
-        currentXp: 0,
-        currentLevel: 1
-    },
-    playerHealth: {
-        cap: 100,
-        maxHealth: 100,
-        currentHealth: 100
-    },
-    character : {
-        model: null,
-        attack: 10,
-        armor: 0,
-        keyPresses: {
-            z: false,
-            q: false,
-            s: false,
-            d: false,
-        },
-        sprites: {
-            body: {
-                faceUp: faceUp,
-                faceRight: faceRight,
-                faceLeft: faceLeft,
-                faceDown: faceDown
-            },
-            health: {
-                heart_full: heart_full,
-                heart_empty: heart_empty
-            }
-        }
-    },
-    projectiles: [],
-    enemies: [],
-    loots: [],
-    intervalProcess: [],
-    mousePos: {
-        x: 0,
-        y: 0
-    }
-}
+// On charge les images du jeu EXEMPLE
+// let faceUp, faceRight;
+// [faceUp, faceRight] = await loadImages([
+//     "./assets/img/character/faceup.png",
+//     "./assets/img/character/faceright.png",
+// ])
 
 // On ajoute un évènement sur le bouton "Commencez" pour lancer le jeu
 startButton.addEventListener("click", () => {
     // On cache le menu de démarrage et on affiche le canvas
     startMenu.style.display = "none";
     canvas.style.display = "block";
-
     // Apparition du personnage
-    gameVariables.character.model = new Character(canvas.width / 2, canvas.height / 2, 10, "blue", gameVariables.character.sprites.body.faceDown);
-
+    game.character.model = new Character(canvas.width / 2, canvas.height / 2, 10, "blue");
     // On lance le jeu
     gameLoop();
-    gameVariables.isLooping = true;
-
+    game.isLooping = true;
     // Apparition des ennemis
-    gameVariables.intervalProcess.push(spawnEnemies(canvas, gameVariables, Enemy));
-
-
+    game.intervalInstances.push(spawnEnemies(canvas, game, Enemy));
     // On ajoute des évènements sur les touches du clavier
-    window.onmousemove = (e) => gameVariables.isLooping ? (gameVariables.mousePos.x = e.clientX, gameVariables.mousePos.y = e.clientY) : null;
-    window.addEventListener('keydown', (e) => gameVariables.isLooping ? keyDownListener(e, gameVariables.character.keyPresses ) : null);
-    window.addEventListener('keyup', (e) => gameVariables.isLooping ? keyUpListener(e, gameVariables.character.keyPresses) : null);
-    document.addEventListener("click", (e) => gameVariables.isLooping ? shoot(e, gameVariables.character.model, gameVariables.projectiles) : null);
+    window.onmousemove = (e) => game.isLooping ? game.mousePos = {x: e.clientX, y: e.clientY} : null;
+    window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
+    window.addEventListener('keyup', (e) => game.isLooping ? keyUpListener(e, game) : null);
+    document.addEventListener("click", (e) => game.isLooping ? shoot(e, game) : null);
 })
 
 
 
-function drawXpBar(context, canvas, gameVariables) {
-    context.beginPath();
-    context.fillStyle = "lightgreen";
-    context.rect(10, 10, gameVariables.playerLevel.currentXp / gameVariables.playerLevel.cap * 200, 20);
-    context.fill();
-    context.closePath();
-    context.beginPath();
-    context.strokeStyle = "black";
-    context.lineWidth = 2;
-    context.rect(10, 10, 200, 20);
-    context.stroke();
-    context.closePath();
-    context.beginPath();
-    context.fillStyle = "black";
-    context.font = "16px Arial";
-    context.fillText(`Niv. ${gameVariables.playerLevel.currentLevel}`, 10, 50);
-    context.closePath();
-}
-
-function drawCharacterStats(context, canvas, gameVariables) {
-    drawHpBar(context, gameVariables);
-    drawXpBar(context, canvas, gameVariables);
-    drawStatsBar(context, gameVariables);
-}
-
-function drawStatsBar(context, gameVariables) {
-    // On dessine le fond de la barre de stats
-    context.beginPath();
-    context.fillStyle = "lightgrey";
-    context.rect(canvas.width - 210, 10, 200, 80);
-    context.fill();
-    context.closePath();
-    // On dessine la barre de stats
-    context.beginPath();
-    context.fillStyle = "lightblue";
-    context.rect(canvas.width - 210, 10, 200, 80);
-    context.fill();
-    context.closePath();
-    // On dessine le contour de la barre de stats
-    context.beginPath();
-    context.strokeStyle = "black";
-    context.lineWidth = 2;
-    context.rect(canvas.width - 210, 10, 200, 80);
-    context.stroke();
-    context.closePath();
-    // On dessine le texte de la barre de stats
-    context.beginPath();
-    context.fillStyle = "black";
-    context.font = "16px Arial";
-    context.fillText(`Dmg. d'attaque : ${gameVariables.character.attack}`, canvas.width - 200, 40);
-    context.fillText(`Armure : ${gameVariables.character.armor}`, canvas.width - 200, 60);
-    context.fillText(`Vie max : ${gameVariables.playerHealth.maxHealth}`, canvas.width - 200, 80);
-    context.closePath();
-}
-
-
-function drawHpBar(context, gameVariables) {
-    context.beginPath();
-    context.fillStyle = "red";
-    context.rect(
-        gameVariables.character.model.x - 20,
-        gameVariables.character.model.y - 30,
-        gameVariables.playerHealth.currentHealth / gameVariables.playerHealth.cap * 40,
-        5
-    );
-    context.fill();
-    context.closePath();
-    context.beginPath();
-    context.strokeStyle = "black";
-    context.lineWidth = 1;
-    context.rect(
-        gameVariables.character.model.x - 20,
-        gameVariables.character.model.y - 30,
-        40,
-        5
-    );
-    context.stroke();
-    context.closePath();
-}
-
-
-
-
-function resetGameVariables(gameVariables) {
-    gameVariables.character.model = new Character(canvas.width / 2, canvas.height / 2, 10, "blue", gameVariables.character.sprites.body.faceDown);
-    gameVariables.projectiles = [];
-    gameVariables.enemies = [];
-    gameVariables.loots = [];
-    gameVariables.character.keyPresses = {
-        z: false,
-        q: false,
-        s: false,
-        d: false,
-    };
-    gameVariables.playerLevel = {
-        cap: 200,
-        currentXp: 0,
-        currentLevel: 1
-    };
-    gameVariables.playerHealth = {
-        cap: 100,
-        maxHealth: 100,
-        currentHealth: 100
-    }
-    gameVariables.character.attack = 10;
-    gameVariables.character.armor = 0;
-    gameVariables.isLooping = false;
-    gameVariables.intervalProcess.forEach((interval) => {
-        clearInterval(interval);
-    });
-    gameVariables.intervalProcess.length = 0;
-}
 
 
 
@@ -231,76 +75,75 @@ function gameLoop() {
     try {
         requestId = requestAnimationFrame(gameLoop);
         clearCanvas(context, canvas);
-        drawCharacterStats(context, canvas, gameVariables);
+        drawGameIU(context, game);
         // On ajoute l'événement de déplacement du personnage
-        move(gameVariables.character.model, gameVariables.character.keyPresses);
+        move(game);
         // On ajoute la mécanique de dash
-        dash(gameVariables.character.model, gameVariables.character.keyPresses);
-
+        dash(game);
         // On actualise le personnage
-        gameVariables.character.model.update(context, gameVariables.mousePos);
+        game.character.model.update(context, game);
         // On actualise les projectiles
-        gameVariables.projectiles.forEach((projectile) => {
+        game.projectiles.forEach((projectile) => {
             projectile.update(context);
         });
         // Pour chaque loot
-        gameVariables.loots.forEach((loot, index) => {
+        game.loots.forEach((loot, index) => {
             // On actualise le loot
             loot.update(context);
             // On vérifie si le personnage est en collision avec le loot
-            const distance = Math.hypot(gameVariables.character.model.x - loot.x, gameVariables.character.model.y - loot.y);
+            const distance = Math.hypot(game.character.model.x - loot.x, game.character.model.y - loot.y);
             // Si le personnage est en collision avec le loot
-            if (distance - loot.radius - gameVariables.character.model.radius < 1) {
-                gameVariables.loots.splice(index, 1);
+            if (distance - loot.radius - game.character.model.radius < 1) {
+                game.loots.splice(index, 1);
                 // On vérifie le type de loot
                 if (loot.type === "health") {
                     // On ajoute de la vie au joueur
-                    gameVariables.playerHealth.currentHealth += 20;
-                    if (gameVariables.playerHealth.currentHealth > gameVariables.playerHealth.maxHealth) {
-                        gameVariables.playerHealth.currentHealth = gameVariables.playerHealth.maxHealth;
+                    game.playerHealth.currentHealth += 20;
+                    if (game.playerHealth.currentHealth > game.playerHealth.maxHealth) {
+                        game.playerHealth.currentHealth = game.playerHealth.maxHealth;
                     }
-                } else if (loot.type === "ammo") {
-                    console.log("ammo")
+                } else if (loot.type === "money") {
+                    game.character.money += Math.floor(Math.random() * 10) + 1;
                 }
             }
         });
         // Pour chaque ennemi
-        gameVariables.enemies.forEach((enemy, index) => {
+        game.enemies.forEach((enemy, index) => {
             // On actualise l'ennemi
-            enemy.update(context, gameVariables.character.model);
+            enemy.update(context, game);
             // On vérifie si le personnage est en collision avec l'ennemi
             const distance = Math.hypot(
-                gameVariables.character.model.x - enemy.x,
-                gameVariables.character.model.y - enemy.y
+                game.character.model.x - enemy.x,
+                game.character.model.y - enemy.y
             );
             // Si le personnage est en collision avec l'ennemi
-            if (distance - enemy.radius - gameVariables.character.model.radius < 1) {
+            if (distance - enemy.radius - game.character.model.radius < 1) {
                 // On vérifie si le personnage n'est pas déjà en train de se faire attaquer
-                if (!gameVariables.character.model.isHit) {
+                if (!game.character.model.isHit) {
                     // Sinon, on retire des points de vie au personnage
-                    gameVariables.playerHealth.currentHealth -= 20 - gameVariables.character.armor;
-                    gameVariables.character.model.isHit = true;
+                    game.playerHealth.currentHealth -= 20 - game.character.armor;
+                    game.character.model.isHit = true;
                     setTimeout(() => {
-                        gameVariables.character.model.isHit = false;
+                        if (game.character.model) game.character.model.isHit = false;
                     }, 500);
                 }
                 // On vérifie si le personnage n'a plus de points de vie
-                if (gameVariables.playerHealth.currentHealth <= 0) {
+                if (game.playerHealth.currentHealth <= 0) {
                     // Si oui, on arrête la boucle de jeu et on affiche le menu de départ
                     cancelAnimationFrame(requestId);
                     canvas.style.display = "none";
                     startMenu.style.display = "flex";
-                    resetGameVariables(gameVariables);
+                    resetGame(game);
                 }
             }
             // Pour chaque projectile
-            gameVariables.projectiles.forEach((projectile, projectileIndex) => {
+            game.projectiles.forEach((projectile, projectileIndex) => {
                 // On vérifie si le projectile est en collision avec l'ennemi
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {
                     // Si oui, on retire les points de vie de l'ennemi
-                    enemy.health -= gameVariables.character.attack;
-                    gameVariables.projectiles.splice(projectileIndex, 1);
+                    enemy.health -= game.character.attack;
+                    game.projectiles.splice(projectileIndex, 1);
                     enemy.color = "red";
                     setTimeout(() => {
                         enemy.color = "green"
@@ -308,16 +151,16 @@ function gameLoop() {
                     // Si les points de vie de l'ennemi sont inférieurs ou égaux à 0 on le supprime
                     if (enemy.health <= 0) {
                         const type = Math.random() > 0.5 ? "health" : "ammo";
-                        gameVariables.enemies.splice(index, 1);
-                        gameVariables.playerLevel.currentXp += enemy.radius;
-                        gameVariables.loots.push(new Loot(enemy.x, enemy.y, 10, type, 10));
-                        if (gameVariables.playerLevel.currentXp >= gameVariables.playerLevel.cap) {
-                            gameVariables.playerLevel.currentXp = 0;
-                            gameVariables.playerLevel.cap *= 1.5;
-                            gameVariables.playerLevel.currentLevel += 1;
-                            gameVariables.playerHealth.maxHealth += 5;
-                            gameVariables.character.attack += 1;
-                            gameVariables.character.armor += 1;
+                        game.enemies.splice(index, 1);
+                        game.playerLevel.currentXp += enemy.radius;
+                        game.loots.push(new Loot(enemy.x, enemy.y, 10, type, 10));
+                        if (game.playerLevel.currentXp >= game.playerLevel.cap) {
+                            game.playerLevel.currentXp = 0;
+                            game.playerLevel.cap *= 1.5;
+                            game.playerLevel.currentLevel += 1;
+                            game.playerHealth.maxHealth += 5;
+                            game.character.attack += 1;
+                            game.character.armor += 1;
                         }
                     }
                 }

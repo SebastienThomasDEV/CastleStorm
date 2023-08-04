@@ -8,18 +8,11 @@ export default class Projectile {
     }
 
     draw(context) {
-        // On dessine le projectile en forme de flèche d'archer
         context.beginPath();
-        context.moveTo(this.x, this.y);
-        context.lineTo(this.x + Math.cos(this.velocity.angle) * this.radius, this.y + Math.sin(this.velocity.angle) * this.radius);
-        context.lineTo(this.x + Math.cos(this.velocity.angle + Math.PI / 2) * this.radius / 2, this.y + Math.sin(this.velocity.angle + Math.PI / 2) * this.radius / 2);
-        context.lineTo(this.x + Math.cos(this.velocity.angle + Math.PI) * this.radius, this.y + Math.sin(this.velocity.angle + Math.PI) * this.radius);
-        context.lineTo(this.x + Math.cos(this.velocity.angle - Math.PI / 2) * this.radius / 2, this.y + Math.sin(this.velocity.angle - Math.PI / 2) * this.radius / 2);
-        context.lineTo(this.x + Math.cos(this.velocity.angle) * this.radius, this.y + Math.sin(this.velocity.angle) * this.radius);
+        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
         context.fillStyle = this.color;
         context.fill();
         context.closePath();
-
     }
 
     update(context) {

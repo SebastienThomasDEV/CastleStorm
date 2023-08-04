@@ -1,5 +1,5 @@
 export default class Character {
-    constructor(x , y, radius, color) {
+    constructor(x , y, radius) {
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -7,13 +7,12 @@ export default class Character {
         this.targetX = this.x;
         this.targetY = this.y;
         this.angle = 0;
-        this.isHit = false;
     }
 
-    draw(context, mousePos) {
+    draw(context, game) {
         context.beginPath();
         context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        context.fillStyle = this.isHit ? 'red' : 'green';
+        context.fillStyle = game.character.isHit ? 'red' : 'green';
         context.fill();
         context.closePath();
         context.beginPath();
@@ -22,8 +21,6 @@ export default class Character {
         context.strokeStyle = 'black';
         context.stroke();
         context.closePath();
-
-
         //////////////////////////// DEBUG ////////////////////////////
         // dessin de la cible de destination du personnage (pour le debug)
         context.beginPath();
@@ -41,21 +38,21 @@ export default class Character {
         // dessin de la ligne de tir du personnage en fonction du curseur (pour le debug) et un arc de cercle pour le curseur
         context.beginPath();
         context.moveTo(this.x, this.y);
-        context.lineTo(mousePos.x, mousePos.y);
+        context.lineTo(game.mousePos.x, game.mousePos.y);
         context.strokeStyle = 'red';
         context.stroke();
         context.closePath();
         // dessin de l'arc de cercle pour le curseur de 360° (pour le debug)
         context.beginPath();
-        context.arc(mousePos.x, mousePos.y, 5, 0, Math.PI * 2, false);
+        context.arc(game.mousePos.x, game.mousePos.y, 5, 0, Math.PI * 2, false);
         context.fillStyle = 'red';
         context.fill();
         context.closePath();
 
     }
 
-    update(context, mousePos) {
-        this.draw(context, mousePos);
+    update(context, game) {
+        this.draw(context, game);
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
         if (dx !== 0 || dy !== 0) {
