@@ -1,7 +1,7 @@
 import Character from "./Entities/Character.js";
 import Enemy from "./Entities/Enemy.js";
 import Loot from "./Entities/Loot.js";
-import {game} from "./Core/vars/game.js";
+import {game, spritesPath} from "./Core/vars/game.js";
 import {resetGame} from "./Core/functions/reset.js";
 import {drawCharacterHpBar, drawHealthBar, drawXpBar} from "./Core/ui/drawUI.js";
 import {spawnEnemies} from "./Core/physics/spawn.js";
@@ -21,6 +21,14 @@ function clearCanvas(context, canvas) {
 }
 
 
+function updateMousePos(e, game) {
+    game.mousePos = {
+        x: e.clientX,
+        y: e.clientY,
+    }
+}
+
+
 // Initialisation du canvas html et du contexte 2d
 const canvas = document.getElementById("myCanvas");
 const context = canvas.getContext("2d");
@@ -37,13 +45,21 @@ canvas.style.display = "none"
 const startMenu = document.getElementById("startMenu");
 const startButton = document.getElementById("startButton");
 
-// On charge les images du jeu EXEMPLE
-// let faceUp, faceRight;
-// [faceUp, faceRight] = await loadImages([
-//     "./assets/img/character/faceup.png",
-//     "./assets/img/character/faceright.png",
-// ])
 
+
+let up, upLeft, upRight, down, downLeft, downRight, left, right;
+[up, upLeft, upRight, down, downLeft, downRight, left, right] = await loadImages(spritesPath);
+console.log("Sprites chargés");
+game.character.sprites = {
+    up: up,
+    upLeft: upLeft,
+    upRight: upRight,
+    down: down,
+    downLeft: downLeft,
+    downRight: downRight,
+    left: left,
+    right: right
+}
 // On ajoute un évènement sur le bouton "Commencez" pour lancer le jeu
 startButton.addEventListener("click", () => {
     // On cache le menu de démarrage et on affiche le canvas
@@ -57,7 +73,7 @@ startButton.addEventListener("click", () => {
     // Apparition des ennemis
     game.intervalInstances.push(spawnEnemies(canvas, game, Enemy));
     // On ajoute des évènements sur les touches du clavier
-    window.onmousemove = (e) => game.isLooping ? game.mousePos = {x: e.clientX, y: e.clientY} : null;
+    window.onmousemove = (e) => game.isLooping ? updateMousePos(e, game) : null;
     window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
     window.addEventListener('keyup', (e) => game.isLooping ? keyUpListener(e, game) : null);
     document.addEventListener("click", (e) => game.isLooping ? shoot(e, game) : null);

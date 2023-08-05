@@ -20,8 +20,18 @@ export const game =  {
             s: false,
             d: false,
         },
-        sprites: {},
+        sprites: {
+            up: null,
+            upLeft: null,
+            upRight: null,
+            down: null,
+            downLeft: null,
+            downRight: null,
+            left: null,
+            right: null,
+        },
         isHit: false,
+        isMoving: false,
     },
     projectiles: [],
     enemies: [],
@@ -32,3 +42,14 @@ export const game =  {
         y: 0
     }
 }
+
+export const spritesPath = [
+    "assets/img/character/up/Character_Up.png",
+    "assets/img/character/up/Character_UpLeft.png",
+    "assets/img/character/up/Character_UpRight.png",
+    "assets/img/character/down/Character_Down.png",
+    "assets/img/character/down/Character_DownLeft.png",
+    "assets/img/character/down/Character_DownRight.png",
+    "assets/img/character/left/Character_Left.png",
+    "assets/img/character/right/Character_Right.png",
+];

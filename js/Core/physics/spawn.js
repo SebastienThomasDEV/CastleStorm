@@ -1,7 +1,7 @@
 
 
 export function spawnEnemies(canvas, game, enemyClass) {
-    if (game.isLooping === false) {
+    if (game.isLooping === true) {
         return;
     }
     return setInterval((id) => {
