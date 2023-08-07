@@ -8,7 +8,7 @@ import {drawCharacterHpBar, drawHealthBar, drawXpBar} from "./Core/ui/drawUI.js"
 import {spawnEnemies} from "./Core/physics/spawn.js";
 import {shoot} from "./Core/physics/shoot.js";
 import {move, dash, keyDownListener, keyUpListener} from "./Core/physics/movement.js";
-import {loadImages} from "./Core/Loader.js";
+import {loadImages} from "./Core/loader.js";
 
 
 function drawGameIU(context, game) {
