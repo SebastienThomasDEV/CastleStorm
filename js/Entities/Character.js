@@ -6,7 +6,6 @@ export default class Character {
         this.speed = 5;
         this.targetX = this.x;
         this.targetY = this.y;
-        this.angle = 0;
         this.frame = 0;
         this.sprite = 0;
     }
@@ -50,14 +49,11 @@ export default class Character {
 
     update(context, game) {
         this.updateSprite(context, game);
-        console.log(this.sprite);
         this.draw(context, game);
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
         if (dx !== 0 || dy !== 0) {
             const angle = Math.atan2(dy, dx);
-            this.angle = angle;
-            // this.updateSprite(context, game)
             const velocity = {
                 x: Math.cos(angle) * this.speed,
                 y: Math.sin(angle) * this.speed
@@ -111,7 +107,6 @@ export default class Character {
         // si on est en train de bouger, on doit afficher l'animation de marche sinon on doit afficher l'animation d'arrêt
 
         if (this.targetX !== this.x || this.targetY !== this.y) {
-            this.flag = this.x;
             this.frame += 1;
             if (this.frame >= 4) {
                 this.frame = 0;

@@ -1,10 +1,10 @@
 
 
 export function spawnEnemies(canvas, game, enemyClass) {
-    if (game.isLooping === true) {
+    if (game.isLooping === false) {
         return;
     }
-    return setInterval((id) => {
+    return setInterval(() => {
         const randomRadius = Math.random() * 30 + 10;
         const randomSpeed = Math.random() * 2 + 1;
         const randomColor = `hsl(${Math.random() * 360}, 50%, 50%)`;

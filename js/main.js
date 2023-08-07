@@ -1,7 +1,8 @@
 import Character from "./Entities/Character.js";
 import Enemy from "./Entities/Enemy.js";
 import Loot from "./Entities/Loot.js";
-import {game, spritesPath} from "./Core/vars/game.js";
+import Projectile from "./Entities/Projectile.js";
+import {game, characterSprites, lootSprites} from "./Core/vars/game.js";
 import {resetGame} from "./Core/functions/reset.js";
 import {drawCharacterHpBar, drawHealthBar, drawXpBar} from "./Core/ui/drawUI.js";
 import {spawnEnemies} from "./Core/physics/spawn.js";
@@ -48,7 +49,9 @@ const startButton = document.getElementById("startButton");
 
 
 let up, upLeft, upRight, down, downLeft, downRight, left, right;
-[up, upLeft, upRight, down, downLeft, downRight, left, right] = await loadImages(spritesPath);
+[up, upLeft, upRight, down, downLeft, downRight, left, right] = await loadImages(characterSprites);
+let potion, coin, pile, bag;
+[potion, coin, pile, bag] = await loadImages(lootSprites);
 console.log("Sprites chargés");
 game.character.sprites = {
     up: up,
@@ -59,6 +62,14 @@ game.character.sprites = {
     downRight: downRight,
     left: left,
     right: right
+}
+game.loots.sprites = {
+    potion: potion,
+    money: {
+        coin: coin,
+        pile: pile,
+        bag: bag
+    }
 }
 // On ajoute un évènement sur le bouton "Commencez" pour lancer le jeu
 startButton.addEventListener("click", () => {
@@ -76,7 +87,7 @@ startButton.addEventListener("click", () => {
     window.onmousemove = (e) => game.isLooping ? updateMousePos(e, game) : null;
     window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
     window.addEventListener('keyup', (e) => game.isLooping ? keyUpListener(e, game) : null);
-    document.addEventListener("click", (e) => game.isLooping ? shoot(e, game) : null);
+    document.addEventListener("click", (e) => game.isLooping ? shoot(e, game, Projectile) : null);
 })
 
 
@@ -103,14 +114,14 @@ function gameLoop() {
             projectile.update(context);
         });
         // Pour chaque loot
-        game.loots.forEach((loot, index) => {
+        game.loots.instances.forEach((loot, index) => {
             // On actualise le loot
-            loot.update(context);
+            loot.update(context, game);
             // On vérifie si le personnage est en collision avec le loot
             const distance = Math.hypot(game.character.model.x - loot.x, game.character.model.y - loot.y);
             // Si le personnage est en collision avec le loot
             if (distance - loot.radius - game.character.model.radius < 1) {
-                game.loots.splice(index, 1);
+                game.loots.instances.splice(index, 1);
                 // On vérifie le type de loot
                 if (loot.type === "health") {
                     // On ajoute de la vie au joueur
@@ -166,10 +177,11 @@ function gameLoop() {
                     }, 100);
                     // Si les points de vie de l'ennemi sont inférieurs ou égaux à 0 on le supprime
                     if (enemy.health <= 0) {
-                        const type = Math.random() > 0.5 ? "health" : "ammo";
+                        const type = Math.random() > 0.5 ? "health" : "money";
                         game.enemies.splice(index, 1);
                         game.playerLevel.currentXp += enemy.radius;
-                        game.loots.push(new Loot(enemy.x, enemy.y, 10, type, 10));
+                        game.loots.instances.push(new Loot(enemy.x, enemy.y, type));
+                        // On vérifie si le joueur a assez d'expérience pour passer au niveau supérieur
                         if (game.playerLevel.currentXp >= game.playerLevel.cap) {
                             game.playerLevel.currentXp = 0;
                             game.playerLevel.cap *= 1.5;

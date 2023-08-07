@@ -3,6 +3,7 @@ export async function loadImages(paths) {
 
     for (let i = 0, l = paths.length; i < l; i++) {
         images[i] = await loadImage(paths[i]);
+        console.log(paths[i] + " chargé");
     }
     return images;
 }

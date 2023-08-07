@@ -23,6 +23,8 @@ export function drawCharacterHpBar(context, game) {
 }
 
 export function drawHealthBar(context, game) {
+    // On dessine la barre de vie du joueur en haut à gauche avec les valeurs actuelles de vie et de vie maximale,
+    // au centre de la barre de vie
     context.beginPath();
     context.fillStyle = "red";
     context.rect(10, 10, game.playerHealth.currentHealth / game.playerHealth.maxHealth * 200, 20);
@@ -34,6 +36,13 @@ export function drawHealthBar(context, game) {
     context.rect(10, 10, 200, 20);
     context.stroke();
     context.closePath();
+    context.beginPath();
+    context.font = "12px Arial";
+    context.fillStyle = "black";
+    context.textAlign = "center";
+    context.fillText(game.playerHealth.currentHealth + "/" + game.playerHealth.maxHealth, 110, 25);
+    context.closePath();
+
 }
 
 export function drawXpBar(context, game) {

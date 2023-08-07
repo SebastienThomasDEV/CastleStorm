@@ -39,4 +39,5 @@ export default class Enemy {
         this.velocity.y = Math.sin(this.angle) * this.speed;
     }
 
+
 }

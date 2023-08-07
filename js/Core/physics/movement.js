@@ -31,9 +31,9 @@ export function move(game) {
 }
 
 export function dash(game) {
+    // on doit faire le dash dans la direction du curseur dans un rayon de 20px max
     if (game.character.inputs[" "]) {
-        game.character.model.x = game.character.model.targetX;
-        game.character.model.y = game.character.model.targetY;
+        console.log("dash");
     }
 }
 

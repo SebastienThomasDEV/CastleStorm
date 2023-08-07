@@ -10,16 +10,6 @@ export const game =  {
         currentHealth: 100
     },
     character : {
-        model: null,
-        money: 0,
-        attack: 10,
-        armor: 0,
-        inputs: {
-            z: false,
-            q: false,
-            s: false,
-            d: false,
-        },
         sprites: {
             up: null,
             upLeft: null,
@@ -30,12 +20,32 @@ export const game =  {
             left: null,
             right: null,
         },
+        model: null,
+        money: 0,
+        attack: 10,
+        armor: 0,
+        inputs: {
+            z: false,
+            q: false,
+            s: false,
+            d: false,
+        },
         isHit: false,
         isMoving: false,
     },
     projectiles: [],
     enemies: [],
-    loots: [],
+    loots: {
+        sprites: {
+            potion: null,
+            money: {
+                coin: null,
+                pile: null,
+                bag: null
+            }
+        },
+        instances: []
+    },
     intervalInstances: [],
     mousePos: {
         x: 0,
@@ -43,7 +53,7 @@ export const game =  {
     }
 }
 
-export const spritesPath = [
+export const characterSprites = [
     "assets/img/character/up/Character_Up.png",
     "assets/img/character/up/Character_UpLeft.png",
     "assets/img/character/up/Character_UpRight.png",
@@ -53,3 +63,10 @@ export const spritesPath = [
     "assets/img/character/left/Character_Left.png",
     "assets/img/character/right/Character_Right.png",
 ];
+
+export const lootSprites = [
+    "assets/img/loots/health/potion.png",
+    "assets/img/loots/money/coin.png",
+    "assets/img/loots/money/pile.png",
+    "assets/img/loots/money/bag.png",
+]
