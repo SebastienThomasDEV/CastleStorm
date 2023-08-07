@@ -6,7 +6,7 @@ export function spawnEnemies(canvas, game, enemyClass) {
     }
     return setInterval(() => {
         const randomRadius = Math.random() * 30 + 10;
-        const randomSpeed = Math.random() * 2 + 1;
+        const randomSpeed = Math.random() * 6 + 1;
         const randomColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
         const randomHealth = Math.random() * 30 + 20;
         let x;
