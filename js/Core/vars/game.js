@@ -20,6 +20,20 @@ export const game =  {
             left: null,
             right: null,
         },
+        statistics: {
+            level: {
+                xp: 0,
+                cap: 200,
+                current: 1
+            },
+            health: {
+                max: 100,
+                current: 100
+            },
+            armor: 0,
+            attack: 10,
+            speed: 5,
+        },
         model: null,
         money: 0,
         attack: 10,
@@ -29,6 +43,7 @@ export const game =  {
             q: false,
             s: false,
             d: false,
+            click: true,
         },
         isHit: false,
         isMoving: false,
@@ -45,6 +60,9 @@ export const game =  {
             }
         },
         instances: []
+    },
+    gui: {
+        playerStats: null,
     },
     intervalInstances: [],
     mousePos: {
@@ -69,4 +87,8 @@ export const lootSprites = [
     "assets/img/loots/money/coin.png",
     "assets/img/loots/money/pile.png",
     "assets/img/loots/money/bag.png",
+]
+
+export const uiSprites = [
+    "assets/img/gui/gui.png",
 ]

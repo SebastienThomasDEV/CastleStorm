@@ -58,5 +58,17 @@ export function drawXpBar(context, game) {
     context.stroke();
     context.closePath();
     context.beginPath();
+    context.font = "12px Arial";
+    context.fillStyle = "black";
+    context.textAlign = "center";
+    context.fillText(Math.round(game.playerLevel.currentXp) + "/" + Math.round(game.playerLevel.cap), 110, 65);
+    context.closePath();
+}
+
+export function drawPlayerStats(context, game) {
+    context.beginPath();
+    // On affiche l'image de la fenêtre de statistiques du joueur qui fait 256x256 en haut a droite
+    context.drawImage(game.gui.playerStats, window.innerWidth - 260, -20, 256, 256);
+    context.closePath();
 }
 

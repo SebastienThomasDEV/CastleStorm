@@ -4,7 +4,7 @@ import Loot from "./Entities/Loot.js";
 import Projectile from "./Entities/Projectile.js";
 import {game, characterSprites, lootSprites} from "./Core/vars/game.js";
 import {resetGame} from "./Core/functions/reset.js";
-import {drawCharacterHpBar, drawHealthBar, drawXpBar} from "./Core/ui/drawUI.js";
+import {drawCharacterHpBar, drawHealthBar, drawPlayerStats, drawXpBar} from "./Core/ui/drawUI.js";
 import {spawnEnemies} from "./Core/physics/spawn.js";
 import {shoot} from "./Core/physics/shoot.js";
 import {move, dash, keyDownListener, keyUpListener} from "./Core/physics/movement.js";
@@ -15,6 +15,7 @@ function drawGameIU(context, game) {
     drawXpBar(context, game);
     drawHealthBar(context, game);
     drawCharacterHpBar(context, game);
+    drawPlayerStats(context, game);
 }
 
 function clearCanvas(context, canvas) {
@@ -52,6 +53,9 @@ let up, upLeft, upRight, down, downLeft, downRight, left, right;
 [up, upLeft, upRight, down, downLeft, downRight, left, right] = await loadImages(characterSprites);
 let potion, coin, pile, bag;
 [potion, coin, pile, bag] = await loadImages(lootSprites);
+let quiPlayerStats;
+[quiPlayerStats] = await loadImages(["assets/img/gui/gui.png"]);
+game.gui.playerStats = quiPlayerStats;
 console.log("Sprites chargés");
 game.character.sprites = {
     up: up,
@@ -87,7 +91,26 @@ startButton.addEventListener("click", () => {
     window.onmousemove = (e) => game.isLooping ? updateMousePos(e, game) : null;
     window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
     window.addEventListener('keyup', (e) => game.isLooping ? keyUpListener(e, game) : null);
-    document.addEventListener("click", (e) => game.isLooping ? shoot(e, game, Projectile) : null);
+    document.addEventListener("mousedown", (e) =>
+    {
+        if (game.isLooping) {
+            game.character.inputs.click = true;
+            console.log(game.character.inputs)
+            shoot(e, game, Projectile)
+            setInterval(() => {
+                shoot(e, game, Projectile)
+            }, 1000)
+        }
+    });
+    document.addEventListener("mouseup", (e) =>
+    {
+        game.character.inputs.click = false;
+        if (game.isLooping) {
+            game.character.inputs.click = false;
+            console.log(game.character.inputs)
+            shoot(e, game, Projectile)
+        }
+    });
 })
 
 
@@ -121,6 +144,7 @@ function gameLoop() {
             const distance = Math.hypot(game.character.model.x - loot.x, game.character.model.y - loot.y);
             // Si le personnage est en collision avec le loot
             if (distance - loot.radius - game.character.model.radius < 1) {
+                console.log("collision")
                 game.loots.instances.splice(index, 1);
                 // On vérifie le type de loot
                 if (loot.type === "health") {
@@ -170,7 +194,7 @@ function gameLoop() {
                 if (distance - enemy.radius - projectile.radius < 1) {
                     // Si oui, on retire les points de vie de l'ennemi
                     enemy.health -= game.character.attack;
-                    game.projectiles.splice(projectileIndex, 1);
+                    // game.projectiles.splice(projectileIndex, 1);
                     enemy.color = "red";
                     setTimeout(() => {
                         enemy.color = "green"
@@ -180,7 +204,7 @@ function gameLoop() {
                         const type = Math.random() > 0.5 ? "health" : "money";
                         game.enemies.splice(index, 1);
                         game.playerLevel.currentXp += enemy.radius;
-                        game.loots.instances.push(new Loot(enemy.x, enemy.y, type));
+                        game.loots.instances.push(new Loot(enemy.x, enemy.y, type, 5));
                         // On vérifie si le joueur a assez d'expérience pour passer au niveau supérieur
                         if (game.playerLevel.currentXp >= game.playerLevel.cap) {
                             game.playerLevel.currentXp = 0;

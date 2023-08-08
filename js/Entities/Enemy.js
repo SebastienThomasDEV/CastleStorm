@@ -18,6 +18,12 @@ export default class Enemy {
         context.fillStyle = this.color;
         context.fill();
         context.closePath();
+        context.beginPath();
+        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        context.strokeStyle = "black";
+        context.stroke();
+        context.closePath();
+
     }
 
     update(context, game) {
