@@ -1,8 +1,8 @@
-export default class Projectile {
-    constructor(x, y, velocity, radius, color) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
+
+import Entity from "./Entity.js";
+export default class Projectile extends Entity {
+    constructor(x, y, radius, velocity, color) {
+        super(x, y, radius);
         this.velocity = velocity;
         this.color = color;
     }

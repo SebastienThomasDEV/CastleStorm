@@ -26,6 +26,7 @@ export function spawnEnemies(canvas, game, enemyClass) {
             randomHealth,
             { x: 0, y: 0 },
             randomSpeed,
+            'ranged'
         );
         game.enemies.push(enemy);
     }, 3000);

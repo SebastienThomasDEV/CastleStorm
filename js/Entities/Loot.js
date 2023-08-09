@@ -1,9 +1,9 @@
-export default class Loot {
+
+import Entity from "./Entity.js";
+export default class Loot extends Entity {
     constructor(x, y, type, radius) {
-        this.x = x;
-        this.y = y;
+        super(x, y, radius);
         this.type = type;
-        this.radius = radius;
     }
 
     draw(context, game) {

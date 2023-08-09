@@ -1,8 +1,8 @@
-export default class Character {
-    constructor(x , y, radius) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
+
+import Entity from "./Entity.js";
+export default class Character extends Entity {
+    constructor(x, y, radius) {
+        super(x, y, radius);
         this.speed = 5;
         this.targetX = this.x;
         this.targetY = this.y;

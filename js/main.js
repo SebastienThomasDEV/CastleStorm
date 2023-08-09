@@ -81,7 +81,7 @@ startButton.addEventListener("click", () => {
     startMenu.style.display = "none";
     canvas.style.display = "block";
     // Apparition du personnage
-    game.character.model = new Character(canvas.width / 2, canvas.height / 2, 10, "blue");
+    game.character.model = new Character(canvas.width / 2, canvas.height / 2, 10);
     // On lance le jeu
     gameLoop();
     game.isLooping = true;
@@ -95,11 +95,7 @@ startButton.addEventListener("click", () => {
     {
         if (game.isLooping) {
             game.character.inputs.click = true;
-            console.log(game.character.inputs)
             shoot(e, game, Projectile)
-            setInterval(() => {
-                shoot(e, game, Projectile)
-            }, 1000)
         }
     });
     document.addEventListener("mouseup", (e) =>
@@ -107,7 +103,6 @@ startButton.addEventListener("click", () => {
         game.character.inputs.click = false;
         if (game.isLooping) {
             game.character.inputs.click = false;
-            console.log(game.character.inputs)
             shoot(e, game, Projectile)
         }
     });
@@ -125,7 +120,6 @@ function gameLoop() {
     try {
         requestId = requestAnimationFrame(gameLoop);
         clearCanvas(context, canvas);
-        drawGameIU(context, game);
         // On ajoute l'événement de déplacement du personnage
         move(game);
         // On ajoute la mécanique de dash
@@ -167,6 +161,9 @@ function gameLoop() {
                 game.character.model.x - enemy.x,
                 game.character.model.y - enemy.y
             );
+            if (enemy.behavior === "ranged") {
+
+            }
             // Si le personnage est en collision avec l'ennemi
             if (distance - enemy.radius - game.character.model.radius < 1) {
                 // On vérifie si le personnage n'est pas déjà en train de se faire attaquer
@@ -218,6 +215,7 @@ function gameLoop() {
                 }
             });
         });
+        drawGameIU(context, game);
     } catch (e) {
         cancelAnimationFrame(requestId);
     }
