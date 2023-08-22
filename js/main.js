@@ -156,14 +156,19 @@ function gameLoop() {
         game.enemies.forEach((enemy, index) => {
             // On actualise l'ennemi
             enemy.update(context, game);
+            game.enemyProjectiles.forEach((projectile) => {
+                projectile.update(context);
+                enemy.isShooting = true;
+                setTimeout(() => {
+                    if ()
+                    enemy.shoot(game, Projectile)
+                })
+            });
             // On vérifie si le personnage est en collision avec l'ennemi
             const distance = Math.hypot(
                 game.character.model.x - enemy.x,
                 game.character.model.y - enemy.y
             );
-            if (enemy.behavior === "ranged") {
-
-            }
             // Si le personnage est en collision avec l'ennemi
             if (distance - enemy.radius - game.character.model.radius < 1) {
                 // On vérifie si le personnage n'est pas déjà en train de se faire attaquer
@@ -185,7 +190,7 @@ function gameLoop() {
                 }
             }
             // Pour chaque projectile
-            game.projectiles.forEach((projectile, projectileIndex) => {
+            game.projectiles.forEach((projectile) => {
                 // On vérifie si le projectile est en collision avec l'ennemi
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {

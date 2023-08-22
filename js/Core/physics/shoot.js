@@ -7,3 +7,4 @@ export function shoot(e, game, projectileClass) {
     }
     game.projectiles.push(new projectileClass(game.character.model.x, game.character.model.y, 5, velocity, "red"));
 }
+

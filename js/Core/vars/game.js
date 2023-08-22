@@ -49,6 +49,7 @@ export const game =  {
         isMoving: false,
     },
     projectiles: [],
+    enemyProjectiles: [],
     enemies: [],
     loots: {
         sprites: {

@@ -11,6 +11,7 @@ export default class Enemy extends Entity {
         this.dy = 0;          // Différence de position entre l'ennemi et le joueur
         this.angle = 0;       // Angle entre l'ennemi et le joueur
         this.behavior = behavior    // Comportement de l'ennemi
+        this.isShooting = false;    // L'ennemi tire-t-il ?
     }
 
     draw(context) {
@@ -46,9 +47,6 @@ export default class Enemy extends Entity {
             case 'ranged':
                 this.updateAngle(game);
                 this.updateSpeed();
-                setTimeout(() => {
-                    this.shoot(game, Projectile);
-                }, 1000);
                 this.x += this.velocity.x;
                 this.y += this.velocity.y;
                 if (distance < this.radius + game.character.model.radius + 300) {
@@ -65,7 +63,7 @@ export default class Enemy extends Entity {
             y: Math.sin(this.angle) * 20,
         }
         const projectile = new Projectile(this.x , this.y , 5, velocity, 'black');
-        game.projectiles.push(projectile);
+        game.enemyProjectiles.push(projectile);
     }
 
     updateAngle(game) {
