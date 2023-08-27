@@ -3,12 +3,12 @@ import Enemy from "./Entities/Enemy.js";
 import Loot from "./Entities/Loot.js";
 import Projectile from "./Entities/Projectile.js";
 import {game, characterSprites, lootSprites} from "./Core/vars/game.js";
-import {resetGame} from "./Core/functions/reset.js";
 import {drawCharacterHpBar, drawHealthBar, drawPlayerStats, drawXpBar} from "./Core/ui/drawUI.js";
 import {spawnEnemies} from "./Core/physics/spawn.js";
 import {shoot} from "./Core/physics/shoot.js";
-import {move, dash, keyDownListener, keyUpListener} from "./Core/physics/movement.js";
+import {keyDownListener, keyUpListener, input} from "./Core/physics/movement.js";
 import {loadImages} from "./Core/loader.js";
+
 
 
 function drawGameIU(context, game) {
@@ -48,13 +48,12 @@ const startMenu = document.getElementById("startMenu");
 const startButton = document.getElementById("startButton");
 
 
-
 let up, upLeft, upRight, down, downLeft, downRight, left, right;
 [up, upLeft, upRight, down, downLeft, downRight, left, right] = await loadImages(characterSprites);
 let potion, coin, pile, bag;
 [potion, coin, pile, bag] = await loadImages(lootSprites);
 let quiPlayerStats;
-[quiPlayerStats] = await loadImages(["assets/img/gui/gui.png"]);
+[quiPlayerStats] = await loadImages(["assets/img/gui/uu.png"]);
 game.gui.playerStats = quiPlayerStats;
 console.log("Sprites chargés");
 game.character.sprites = {
@@ -81,7 +80,7 @@ startButton.addEventListener("click", () => {
     startMenu.style.display = "none";
     canvas.style.display = "block";
     // Apparition du personnage
-    game.character.model = new Character(canvas.width / 2, canvas.height / 2, 10);
+    game.character.object = new Character(canvas.width / 2, canvas.height / 2, 10);
     // On lance le jeu
     gameLoop();
     game.isLooping = true;
@@ -91,102 +90,91 @@ startButton.addEventListener("click", () => {
     window.onmousemove = (e) => game.isLooping ? updateMousePos(e, game) : null;
     window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
     window.addEventListener('keyup', (e) => game.isLooping ? keyUpListener(e, game) : null);
-    document.addEventListener("mousedown", (e) =>
-    {
+    document.addEventListener("mousedown", () => {
         if (game.isLooping) {
             game.character.inputs.click = true;
-            shoot(e, game, Projectile)
+            if (!game.character.object.isShooting) {
+                let idInterval = setInterval(() => {
+                    game.character.object.shoot(game, Projectile);
+                }, 40000 / game.character.object.fireRate);
+                game.process.push(idInterval);
+            }
         }
     });
-    document.addEventListener("mouseup", (e) =>
-    {
+    document.addEventListener("mouseup", (e) => {
         game.character.inputs.click = false;
         if (game.isLooping) {
             game.character.inputs.click = false;
-            shoot(e, game, Projectile)
+            game.process.forEach((idInterval) => {
+                clearInterval(idInterval);
+            });
+            game.process = [];
         }
     });
 })
 
 
 
-
-
-
-
-let requestId = 0;
-
 function gameLoop() {
     try {
-        requestId = requestAnimationFrame(gameLoop);
+        game.animationFrameId = requestAnimationFrame(gameLoop);
         clearCanvas(context, canvas);
         // On ajoute l'événement de déplacement du personnage
-        move(game);
-        // On ajoute la mécanique de dash
-        dash(game);
+        input(game, gameLoop);
         // On actualise le personnage
-        game.character.model.update(context, game);
+        game.character.object.update(context, game);
         // On actualise les projectiles
         game.projectiles.forEach((projectile) => {
             projectile.update(context);
+            if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
+                game.projectiles.splice(game.projectiles.indexOf(projectile), 1);
+            }
         });
         // Pour chaque loot
         game.loots.instances.forEach((loot, index) => {
             // On actualise le loot
             loot.update(context, game);
             // On vérifie si le personnage est en collision avec le loot
-            const distance = Math.hypot(game.character.model.x - loot.x, game.character.model.y - loot.y);
-            // Si le personnage est en collision avec le loot
-            if (distance - loot.radius - game.character.model.radius < 1) {
-                console.log("collision")
+            const distance = Math.hypot(game.character.object.x - loot.x, game.character.object.y - loot.y);
+            if (distance - loot.radius - game.character.object.radius < 1) {
                 game.loots.instances.splice(index, 1);
-                // On vérifie le type de loot
                 if (loot.type === "health") {
-                    // On ajoute de la vie au joueur
-                    game.playerHealth.currentHealth += 20;
-                    if (game.playerHealth.currentHealth > game.playerHealth.maxHealth) {
-                        game.playerHealth.currentHealth = game.playerHealth.maxHealth;
-                    }
+                    game.character.object.heal(10)
                 } else if (loot.type === "money") {
-                    game.character.money += Math.floor(Math.random() * 10) + 1;
+                    game.character.object.credit(10);
                 }
             }
         });
-        // Pour chaque ennemi
+        game.enemyProjectiles.forEach((projectile, index) => {
+            projectile.update(context);
+            const distance = Math.hypot(game.character.object.x - projectile.x, game.character.object.y - projectile.y);
+            if (distance - projectile.radius - game.character.object.radius < 1) {
+                game.enemyProjectiles.splice(index, 1);
+                game.character.object.takeDamage(10);
+            }
+            if (projectile.x < 0 || projectile.x > canvas.width || projectile.y < 0 || projectile.y > canvas.height) {
+                game.enemyProjectiles.splice(index, 1);
+            }
+        });
         game.enemies.forEach((enemy, index) => {
-            // On actualise l'ennemi
             enemy.update(context, game);
-            game.enemyProjectiles.forEach((projectile) => {
-                projectile.update(context);
-                enemy.isShooting = true;
-                setTimeout(() => {
-                    if ()
-                    enemy.shoot(game, Projectile)
-                })
-            });
+            if (!enemy.isShooting && enemy.behavior === "ranged") {
+                enemy.shoot(game, Projectile);
+            }
             // On vérifie si le personnage est en collision avec l'ennemi
             const distance = Math.hypot(
-                game.character.model.x - enemy.x,
-                game.character.model.y - enemy.y
+                game.character.object.x - enemy.x,
+                game.character.object.y - enemy.y
             );
             // Si le personnage est en collision avec l'ennemi
-            if (distance - enemy.radius - game.character.model.radius < 1) {
+            if (distance - enemy.radius - game.character.object.radius < 1) {
                 // On vérifie si le personnage n'est pas déjà en train de se faire attaquer
-                if (!game.character.model.isHit) {
-                    // Sinon, on retire des points de vie au personnage
-                    game.playerHealth.currentHealth -= 20 - game.character.armor;
-                    game.character.model.isHit = true;
+                if (!game.character.object.isHit) {
+                    game.character.object.takeDamage(enemy.attack);
+                    game.character.object.isHit = true;
                     setTimeout(() => {
-                        if (game.character.model) game.character.model.isHit = false;
+                        if (game.character.object) game.character.object.isHit = false;
                     }, 500);
-                }
-                // On vérifie si le personnage n'a plus de points de vie
-                if (game.playerHealth.currentHealth <= 0) {
-                    // Si oui, on arrête la boucle de jeu et on affiche le menu de départ
-                    cancelAnimationFrame(requestId);
-                    canvas.style.display = "none";
-                    startMenu.style.display = "flex";
-                    resetGame(game);
                 }
             }
             // Pour chaque projectile
@@ -195,7 +183,7 @@ function gameLoop() {
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {
                     // Si oui, on retire les points de vie de l'ennemi
-                    enemy.health -= game.character.attack;
+                    enemy.health -= game.character.object.attack;
                     // game.projectiles.splice(projectileIndex, 1);
                     enemy.color = "red";
                     setTimeout(() => {
@@ -203,27 +191,19 @@ function gameLoop() {
                     }, 100);
                     // Si les points de vie de l'ennemi sont inférieurs ou égaux à 0 on le supprime
                     if (enemy.health <= 0) {
-                        const type = Math.random() > 0.5 ? "health" : "money";
                         game.enemies.splice(index, 1);
-                        game.playerLevel.currentXp += enemy.radius;
-                        game.loots.instances.push(new Loot(enemy.x, enemy.y, type, 5));
-                        // On vérifie si le joueur a assez d'expérience pour passer au niveau supérieur
-                        if (game.playerLevel.currentXp >= game.playerLevel.cap) {
-                            game.playerLevel.currentXp = 0;
-                            game.playerLevel.cap *= 1.5;
-                            game.playerLevel.currentLevel += 1;
-                            game.playerHealth.maxHealth += 5;
-                            game.character.attack += 1;
-                            game.character.armor += 1;
-                        }
+                        enemy.dropLoot(game, Loot);
+                        game.character.object.gainXp(10);
                     }
                 }
             });
         });
+        if (game.character.object.health.current <= 0) {
+            location.reload();
+        }
         drawGameIU(context, game);
     } catch (e) {
-        cancelAnimationFrame(requestId);
+        cancelAnimationFrame(game.animationFrameId);
     }
 }
-
 

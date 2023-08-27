@@ -1,22 +1,23 @@
 
-
 export function spawnEnemies(canvas, game, enemyClass) {
-    if (game.isLooping === false) {
+    if (!game.isLooping) {
         return;
     }
     return setInterval(() => {
-        const randomRadius = Math.random() * 30 + 10;
-        const randomSpeed = Math.random() * 6 + 1;
-        const randomColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
-        const randomHealth = Math.random() * 30 + 20;
+        const random = Math.random();
+        const randomRadius = random * 30 + 10;
+        const randomSpeed = random * 10 + 1;
+        const randomColor = `hsl(${random * 360}, 50%, 50%)`;
+        const randomHealth = random * 30 + 20;
+        const randomBehavior = random < 0.5 ? 'ranged' : 'melee';
         let x;
         let y;
         if (Math.random() < 0.5) {
-            x = Math.random() < 0.5 ? 0 - randomRadius : canvas.width + randomRadius;
-            y = Math.random() * canvas.height;
+            x = random < 0.5 ? 0 - randomRadius : canvas.width + randomRadius;
+            y = random * canvas.height;
         } else {
-            x = Math.random() * canvas.width;
-            y = Math.random() < 0.5 ? 0 - randomRadius : canvas.height + randomRadius;
+            x = random * canvas.width;
+            y = random < 0.5 ? 0 - randomRadius : canvas.height + randomRadius;
         }
         const enemy = new enemyClass(
             x,
@@ -26,8 +27,8 @@ export function spawnEnemies(canvas, game, enemyClass) {
             randomHealth,
             { x: 0, y: 0 },
             randomSpeed,
-            'ranged'
+            randomBehavior,
         );
         game.enemies.push(enemy);
-    }, 3000);
+    }, 1000);
 }

@@ -2,9 +2,9 @@ export function drawCharacterHpBar(context, game) {
     context.beginPath();
     context.fillStyle = "red";
     context.rect(
-        game.character.model.x - 20,
-        game.character.model.y - 30,
-        game.playerHealth.currentHealth / game.playerHealth.maxHealth * 40,
+        game.character.object.x - 20,
+        game.character.object.y - 30,
+        game.character.object.health.current / game.character.object.health.max * 40,
         5
     );
     context.fill();
@@ -13,8 +13,8 @@ export function drawCharacterHpBar(context, game) {
     context.strokeStyle = "black";
     context.lineWidth = 1;
     context.rect(
-        game.character.model.x - 20,
-        game.character.model.y - 30,
+        game.character.object.x - 20,
+        game.character.object.y - 30,
         40,
         5
     );
@@ -27,7 +27,7 @@ export function drawHealthBar(context, game) {
     // au centre de la barre de vie
     context.beginPath();
     context.fillStyle = "red";
-    context.rect(10, 10, game.playerHealth.currentHealth / game.playerHealth.maxHealth * 200, 20);
+    context.rect(10, 10, game.character.object.health.current / game.character.object.health.max * 200, 20);
     context.fill();
     context.closePath();
     context.beginPath();
@@ -40,15 +40,14 @@ export function drawHealthBar(context, game) {
     context.font = "12px Arial";
     context.fillStyle = "black";
     context.textAlign = "center";
-    context.fillText(game.playerHealth.currentHealth + "/" + game.playerHealth.maxHealth, 110, 25);
+    context.fillText(game.character.object.health.current  + "/" + game.character.object.health.max , 110, 25);
     context.closePath();
-
 }
 
 export function drawXpBar(context, game) {
     context.beginPath();
     context.fillStyle = "lightgreen";
-    context.rect(10, 50, game.playerLevel.currentXp / game.playerLevel.cap * 200, 20);
+    context.rect(10, 50, game.character.object.level.xp / game.character.object.level.cap * 200, 20);
     context.fill();
     context.closePath();
     context.beginPath();
@@ -61,14 +60,19 @@ export function drawXpBar(context, game) {
     context.font = "12px Arial";
     context.fillStyle = "black";
     context.textAlign = "center";
-    context.fillText(Math.round(game.playerLevel.currentXp) + "/" + Math.round(game.playerLevel.cap), 110, 65);
+    context.fillText(Math.round(game.character.object.level.xp) + "/" + Math.round(game.character.object.level.cap), 110, 65);
     context.closePath();
 }
 
 export function drawPlayerStats(context, game) {
     context.beginPath();
-    // On affiche l'image de la fenêtre de statistiques du joueur qui fait 256x256 en haut a droite
-    context.drawImage(game.gui.playerStats, window.innerWidth - 260, -20, 256, 256);
+    context.font = "12px Arial";
+    context.fillStyle = "black";
+    context.textAlign = "left";
+    context.fillText("Level: " + game.character.object.level.current, 10, 90);
+    context.fillText("Attack: " + game.character.object.attack, 10, 105);
+    context.fillText("Defense: " + game.character.object.armor, 10, 120);
+    context.fillText("Balance: " + game.character.object.balance, 10, 135);
     context.closePath();
 }
 

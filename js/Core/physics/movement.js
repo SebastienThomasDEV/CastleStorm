@@ -1,41 +1,56 @@
-export function move(game) {
+
+export function input(game, gameLoop = null) {
     // faire que le personnage ne puisse pas sortir de la map
-    const character = game.character.model;
     if (game.character.inputs.z) {
-        if (game.character.model.targetY > 0) {
-            game.character.model.targetY -= game.character.model.speed;
+        if (game.character.object.targetY > 0) {
+            game.character.object.targetY -= game.character.object.speed;
         } else {
-            game.character.model.targetY = 0;
+            game.character.object.targetY = 0;
         }
 
     } else if (game.character.inputs.s) {
-        if (game.character.model.targetY < window.innerHeight) {
-            game.character.model.targetY += game.character.model.speed;
+        if (game.character.object.targetY < window.innerHeight) {
+            game.character.object.targetY += game.character.object.speed;
         } else {
-            game.character.model.targetY = window.innerHeight;
+            game.character.object.targetY = window.innerHeight;
         }
     }
     if (game.character.inputs.q) {
-        if (game.character.model.targetX > 0) {
-            game.character.model.targetX -= game.character.model.speed;
+        if (game.character.object.targetX > 0) {
+            game.character.object.targetX -= game.character.object.speed;
         } else {
-            game.character.model.targetX = 0;
+            game.character.object.targetX = 0;
         }
     } else if (game.character.inputs.d) {
-        if (game.character.model.targetX < window.innerWidth) {
-            game.character.model.targetX += game.character.model.speed;
+        if (game.character.object.targetX < window.innerWidth) {
+            game.character.object.targetX += game.character.object.speed;
         } else {
-            game.character.model.targetX = window.innerWidth;
+            game.character.object.targetX = window.innerWidth;
         }
+    } else if (game.character.inputs.Escape) {
+        cancelAnimationFrame(game.animationFrameId);
+        Swal.fire({
+            title: 'Menu de pause',
+            text: 'Que voulez-vous faire ?',
+            confirmButtonText: 'Reprendre',
+            confirmButtonColor: '#3085d6',
+            cancelButtonText: 'Quittez le jeu',
+            cancelButtonColor: '#d33',
+            showCancelButton: true,
+            disableClose: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                game.animationFrameId = requestAnimationFrame(gameLoop);
+            } else {
+                location.reload();
+            }
+        })
     }
 }
 
-export function dash(game) {
-    // on doit faire le dash dans la direction du curseur dans un rayon de 20px max
-    if (game.character.inputs[" "]) {
-        console.log("dash");
-    }
-}
 
 export function keyDownListener(event, game) {
     game.character.inputs[event.key] = true;
