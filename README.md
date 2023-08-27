@@ -1,4 +1,4 @@
-# tiny-shooter-game
+# CastleStorm
 
 CastleStorm un jeu d'action ayant pour but de survivre le plus longtemps possible.
 
