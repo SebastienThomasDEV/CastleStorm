@@ -1,13 +1,31 @@
 
 import Entity from "./Entity.js";
+
 export default class Character extends Entity {
     constructor(x, y, radius) {
         super(x, y, radius);
-        this.speed = 5;
         this.targetX = this.x;
         this.targetY = this.y;
+        this.speed = 5;
         this.frame = 0;
         this.sprite = 0;
+        this.level = {
+            xp: 0,
+            cap: 200,
+            current: 1
+        }
+        this.health = {
+            max: 100,
+            current: 100
+        };
+        this.armor = 0;
+        this.attack = 10;
+        this.balance = 0;
+        this.fireRate = 500;
+        this.isHit = false;
+        this.isMoving = false;
+        this.isShooting = false;
+
     }
 
     draw(context, game) {
@@ -115,6 +133,53 @@ export default class Character extends Entity {
             this.frame = 0;
         }
 
+    }
+
+    checkXp() {
+        if (this.level.xp >= this.level.cap) {
+            this.level.xp = 0;
+            this.level.cap *= 1.5;
+            this.level.current += 1;
+            this.health.max += 5;
+            this.attack += 1;
+            this.armor += 1;
+        }
+    }
+
+    gainXp(xp) {
+        this.level.xp += xp;
+        this.checkXp();
+    }
+
+    takeDamage(damage) {
+        this.health.current -= (damage - this.armor);
+        if (this.health.current <= 0) {
+            this.health.current = 0;
+        }
+    }
+
+    heal(heal) {
+        this.health.current += heal;
+        if (this.health.current > this.health.max) {
+            this.health.current = this.health.max;
+        }
+    }
+
+    credit(credit) {
+        this.balance += credit;
+    }
+
+    shoot(game, projectileClass) {
+        const angle = Math.atan2(game.mousePos.y - this.y, game.mousePos.x - this.x);
+        const velocity = {
+            x: Math.cos(angle) * 20,
+            y: Math.sin(angle) * 20,
+        }
+        this.isShooting = true;
+        setTimeout(() => {
+            this.isShooting = false;
+        }, this.fireRate);
+        game.projectiles.push(new projectileClass(this.x, this.y, 5, velocity, "red"));
     }
 
 

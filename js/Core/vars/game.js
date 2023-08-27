@@ -1,15 +1,7 @@
 export const game =  {
     isLooping: false,
-    playerLevel: {
-        cap: 200,
-        currentXp: 0,
-        currentLevel: 1
-    },
-    playerHealth: {
-        maxHealth: 100,
-        currentHealth: 100
-    },
     character : {
+        object: null,
         sprites: {
             up: null,
             upLeft: null,
@@ -20,24 +12,6 @@ export const game =  {
             left: null,
             right: null,
         },
-        statistics: {
-            level: {
-                xp: 0,
-                cap: 200,
-                current: 1
-            },
-            health: {
-                max: 100,
-                current: 100
-            },
-            armor: 0,
-            attack: 10,
-            speed: 5,
-        },
-        model: null,
-        money: 0,
-        attack: 10,
-        armor: 0,
         inputs: {
             z: false,
             q: false,
@@ -45,10 +19,9 @@ export const game =  {
             d: false,
             click: true,
         },
-        isHit: false,
-        isMoving: false,
     },
     projectiles: [],
+    enemyProjectiles: [],
     enemies: [],
     loots: {
         sprites: {
@@ -65,10 +38,12 @@ export const game =  {
         playerStats: null,
     },
     intervalInstances: [],
+    process: [],
     mousePos: {
         x: 0,
         y: 0
-    }
+    },
+    animationFrameId: 0,
 }
 
 export const characterSprites = [
@@ -90,5 +65,5 @@ export const lootSprites = [
 ]
 
 export const uiSprites = [
-    "assets/img/gui/gui.png",
+    "assets/img/gui/uu.png",
 ]
