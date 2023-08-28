@@ -176,7 +176,9 @@ function gameLoop() {
                 }
             }
             // Pour chaque projectile
-            game.projectiles.forEach((projectile) => {
+            for (let i = 0, projectileCount = game.projectiles.length, projectile; i < projectileCount; i++) {
+                projectile = game.projectiles[i];
+
                 // On vérifie si le projectile est en collision avec l'ennemi
                 const distance = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
                 if (distance - enemy.radius - projectile.radius < 1) {
@@ -194,7 +196,7 @@ function gameLoop() {
                         game.character.object.gainXp(10);
                     }
                 }
-            });
+            }
         });
         if (game.character.object.health.current <= 0) {
             location.reload();
