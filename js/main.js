@@ -1,6 +1,6 @@
 import Character from "./Entities/Character.js";
 import Enemy from "./Entities/Enemy.js";
-import Loot from "./Entities/Loot.js";
+import Loot from "./Entities/Loot/Loot.js";
 import Projectile from "./Entities/Projectile.js";
 import {game, characterSprites, lootSprites} from "./Core/vars/game.js";
 import {drawCharacterHpBar, drawHealthBar, drawPlayerStats, drawXpBar} from "./Core/ui/drawUI.js";

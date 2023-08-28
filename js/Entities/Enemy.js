@@ -1,4 +1,6 @@
 import Entity from "./Entity.js";
+import {Health} from "./Loot/Health.js";
+import {Money} from "./Loot/Money.js";
 
 export default class Enemy extends Entity {
     constructor(x, y, radius, color, health, velocity, speed, behavior) {
@@ -82,9 +84,9 @@ export default class Enemy extends Entity {
         this.velocity.y = Math.sin(this.angle) * this.speed;
     }
 
-    dropLoot(game, Loot) {
-        const type = Math.random() > 0.5 ? "health" : "money";
-        game.loots.instances.push(new Loot(this.x, this.y, type, 5));
+    dropLoot(game) {
+        const type = Math.random() > 0.5 ? Health : Money;
+        game.loots.instances.push(new type(this.x, this.y, type, 5));
     }
 
 

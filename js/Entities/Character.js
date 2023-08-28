@@ -1,6 +1,8 @@
 
 import Entity from "./Entity.js";
 
+const PI = Math.PI;
+
 export default class Character extends Entity {
     constructor(x, y, radius) {
         super(x, y, radius);
@@ -29,14 +31,14 @@ export default class Character extends Entity {
     }
 
     draw(context, game) {
-        context.beginPath();
+        // context.beginPath();
         context.drawImage(this.sprite, this.frame * 32, 0, 32, 32, this.x - 32, this.y - 32, 32 * 2, 32 * 2);
-        context.closePath();
+        // context.closePath();
 
         ////////////////////////// DEBUG ////////////////////////////
         // dessin de la cible de destination du personnage (pour le debug)
         context.beginPath();
-        context.arc(this.targetX, this.targetY, 5, 0, Math.PI * 2, false);
+        context.arc(this.targetX, this.targetY, 5, 0, PI * 2, false);
         context.fillStyle = 'red';
         context.fill();
         context.closePath();
@@ -56,7 +58,7 @@ export default class Character extends Entity {
         context.closePath();
         // dessin de l'arc de cercle pour le curseur de 360° (pour le debug)
         context.beginPath();
-        context.arc(game.mousePos.x, game.mousePos.y, 5, 0, Math.PI * 2, false);
+        context.arc(game.mousePos.x, game.mousePos.y, 5, 0, PI * 2, false);
         context.fillStyle = 'red';
         context.fill();
         context.closePath();
@@ -95,31 +97,25 @@ export default class Character extends Entity {
         // on doit donc vérifier si le curseur est dans un des 8 angles de 45° autour du personnage
         let angle = Math.atan2(game.mousePos.y - this.y, game.mousePos.x - this.x);
         if (angle < 0) {
-            angle += Math.PI * 2;
+            angle += PI * 2;
         }
         // on a l'angle entre le personnage et le curseur
         // on doit maintenant vérifier dans quel angle de 45° on se trouve
         // on va donc vérifier si l'angle est compris entre 0 et 45°, 45° et 90°, etc...
 
-        if (angle >= 0 && angle < Math.PI / 8) {
-            this.sprite = game.character.sprites.right;
-        } else if (angle >= Math.PI / 8 && angle < Math.PI * 3 / 8) {
-            this.sprite = game.character.sprites.downRight;
-        } else if (angle >= Math.PI * 3 / 8 && angle < Math.PI * 5 / 8) {
-            this.sprite = game.character.sprites.down;
-        } else if (angle >= Math.PI * 5 / 8 && angle < Math.PI * 7 / 8) {
-            this.sprite = game.character.sprites.downLeft;
-        } else if (angle >= Math.PI * 7 / 8 && angle < Math.PI * 9 / 8) {
-            this.sprite = game.character.sprites.left;
-        } else if (angle >= Math.PI * 9 / 8 && angle < Math.PI * 11 / 8) {
-            this.sprite = game.character.sprites.upLeft;
-        } else if (angle >= Math.PI * 11 / 8 && angle < Math.PI * 13 / 8) {
-            this.sprite = game.character.sprites.up;
-        } else if (angle >= Math.PI * 13 / 8 && angle < Math.PI * 15 / 8) {
-            this.sprite = game.character.sprites.upRight;
-        } else if (angle >= Math.PI * 15 / 8 && angle < Math.PI * 2) {
-            this.sprite = game.character.sprites.right;
-        }
+        /** @todo Find a place for this (init time) */
+        const SPRITES = [
+            game.character.sprites.left,
+            game.character.sprites.upLeft,
+            game.character.sprites.up,
+            game.character.sprites.upRight,
+            game.character.sprites.right,
+            game.character.sprites.downRight,
+            game.character.sprites.down,
+            game.character.sprites.downLeft,
+        ];
+
+        this.sprite = SPRITES[this.getAngleIndex(angle)];
 
         // on doit mtn vérifier si on est en train de bouger ou pas
         // si on est en train de bouger, on doit afficher l'animation de marche sinon on doit afficher l'animation d'arrêt
@@ -182,7 +178,30 @@ export default class Character extends Entity {
         game.projectiles.push(new projectileClass(this.x, this.y, 5, velocity, "red"));
     }
 
-
-
-
+    /**
+     * @todo Refactor
+     * @param {Number} angle
+     * @returns {Number}
+     */
+    getAngleIndex(angle) {
+        if (angle >= 0 && angle < PI / 8) {
+           return 4;
+        } else if (angle >= PI / 8 && angle < PI * 3 / 8) {
+            return 5;
+        } else if (angle >= PI * 3 / 8 && angle < PI * 5 / 8) {
+            return 6;
+        } else if (angle >= PI * 5 / 8 && angle < PI * 7 / 8) {
+            return 7;
+        } else if (angle >= PI * 7 / 8 && angle < PI * 9 / 8) {
+           return 0;
+        } else if (angle >= PI * 9 / 8 && angle < PI * 11 / 8) {
+            return 1;
+        } else if (angle >= PI * 11 / 8 && angle < PI * 13 / 8) {
+            return 2;
+        } else if (angle >= PI * 13 / 8 && angle < PI * 15 / 8) {
+            return 3;
+        } else if (angle >= PI * 15 / 8 && angle < PI * 2) {
+            return 4;
+        }
+    }
 }
