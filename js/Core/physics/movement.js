@@ -1,4 +1,4 @@
-
+import "sweetalert2";
 
 export function input(game, spawn, gameLoop = null) {
     // faire que le personnage ne puisse pas sortir de la map
@@ -30,6 +30,7 @@ export function input(game, spawn, gameLoop = null) {
         }
     } else if (game.character.inputs.Escape) {
         cancelAnimationFrame(game.animationFrameId);
+
         Swal.fire({
             title: 'Menu de pause',
             text: 'Que voulez-vous faire ?',
