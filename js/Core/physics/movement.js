@@ -1,5 +1,6 @@
 
-export function input(game, gameLoop = null) {
+
+export function input(game, spawn, gameLoop = null) {
     // faire que le personnage ne puisse pas sortir de la map
     if (game.character.inputs.z) {
         if (game.character.object.targetY > 0) {
@@ -42,8 +43,12 @@ export function input(game, gameLoop = null) {
             allowEscapeKey: false,
             allowEnterKey: false,
         }).then((result) => {
+            game.animationFrameId = requestAnimationFrame(gameLoop);
+            game.spawnProcess.forEach((intervalId) => {
+                clearInterval(intervalId)
+            });
             if (result.isConfirmed) {
-                game.animationFrameId = requestAnimationFrame(gameLoop);
+                console.log("reprendre");
             } else {
                 location.reload();
             }
@@ -55,6 +60,7 @@ export function input(game, gameLoop = null) {
 export function keyDownListener(event, game) {
     game.character.inputs[event.key] = true;
 }
+
 export function keyUpListener(event, game) {
     game.character.inputs[event.key] = false;
 }

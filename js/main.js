@@ -5,7 +5,6 @@ import Projectile from "./Entities/Projectile.js";
 import {game, characterSprites, lootSprites} from "./Core/vars/game.js";
 import {drawCharacterHpBar, drawHealthBar, drawPlayerStats, drawXpBar} from "./Core/ui/drawUI.js";
 import {spawnEnemies} from "./Core/physics/spawn.js";
-import {shoot} from "./Core/physics/shoot.js";
 import {keyDownListener, keyUpListener, input} from "./Core/physics/movement.js";
 import {loadImages} from "./Core/loader.js";
 
@@ -55,7 +54,6 @@ let potion, coin, pile, bag;
 let quiPlayerStats;
 [quiPlayerStats] = await loadImages(["assets/img/gui/uu.png"]);
 game.gui.playerStats = quiPlayerStats;
-console.log("Sprites chargés");
 game.character.sprites = {
     up: up,
     upLeft: upLeft,
@@ -85,7 +83,7 @@ startButton.addEventListener("click", () => {
     gameLoop();
     game.isLooping = true;
     // Apparition des ennemis
-    game.intervalInstances.push(spawnEnemies(canvas, game, Enemy));
+    game.spawnProcess.push(spawnEnemies(canvas, game, Enemy));
     // On ajoute des évènements sur les touches du clavier
     window.onmousemove = (e) => game.isLooping ? updateMousePos(e, game) : null;
     window.addEventListener('keydown', (e) => game.isLooping ? keyDownListener(e, game) : null);
@@ -97,7 +95,7 @@ startButton.addEventListener("click", () => {
                 let idInterval = setInterval(() => {
                     game.character.object.shoot(game, Projectile);
                 }, 40000 / game.character.object.fireRate);
-                game.process.push(idInterval);
+                game.autofireProcess.push(idInterval);
             }
         }
     });
@@ -105,10 +103,10 @@ startButton.addEventListener("click", () => {
         game.character.inputs.click = false;
         if (game.isLooping) {
             game.character.inputs.click = false;
-            game.process.forEach((idInterval) => {
+            game.autofireProcess.forEach((idInterval) => {
                 clearInterval(idInterval);
             });
-            game.process = [];
+            game.autofireProcess = [];
         }
     });
 })
@@ -120,7 +118,7 @@ function gameLoop() {
         game.animationFrameId = requestAnimationFrame(gameLoop);
         clearCanvas(context, canvas);
         // On ajoute l'événement de déplacement du personnage
-        input(game, gameLoop);
+        input(game, canvas, gameLoop);
         // On actualise le personnage
         game.character.object.update(context, game);
         // On actualise les projectiles

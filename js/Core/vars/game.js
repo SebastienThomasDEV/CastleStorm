@@ -37,8 +37,8 @@ export const game =  {
     gui: {
         playerStats: null,
     },
-    intervalInstances: [],
-    process: [],
+    spawnProcess: [],
+    autofireProcess: [],
     mousePos: {
         x: 0,
         y: 0
