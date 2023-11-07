@@ -1,84 +1,84 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <link rel="icon" href="assets/img/character/faceright.png">
-        <meta http-equiv="Content-Type" content="application/javascript; charset=UTF-8; text/html; x">
-        <link rel="stylesheet" href="assets/css/main.css">
-        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="js/main.js" type="module"  defer></script>
-        <title>Document</title>
-    </head>
-    <body class="flex justify-center items-center flex-col h-screen w-screen">
-        <div id="startMenu" class="background w-full h-full flex bg-gray-700">
-            <div class="sideMenu flex p-6 rounded-e-lg flex-col">
-                <div class="flex-1 flex flex-col gap-32">
-                    <img src="./assets/img/logo_small.png" alt="logo du jeu" class="w-64 h-12">
-                    <ul class="flex gap-6 flex-col text-xl text-white">
-                        <li>
-                            <a href="https://github.com/SebastienThomasDEV/tiny-shooter-game" class="flex items-center">
-                                <ion-icon name="git-branch-outline" class="mr-2"></ion-icon>
-                                Répertoire GitHub
-                            </a>
-                        </li>
-                        <li>
-                            <a href="" class="flex items-center">
-                                <ion-icon name="laptop-outline" class="mr-2"></ion-icon>
-                                Site du développeur
-                            </a>
-                        </li>
-                        <li>
-                            <a href="" class="flex items-center">
-                                <ion-icon name="bug-outline" class="mr-2"></ion-icon>
-                                Un bug ? signalez-le !
-                            </a>
-                        </li>
-                        <li>
-                            <a href="" class="flex items-center">
-                                <ion-icon name="cafe-outline" class="mr-2"></ion-icon>
-                                Buy me a coffee <3
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <p class="text-sm text-gray-400 text-center">
-                    CastleStorm & © 2023, <br>
-                    411 Inc Ltd. All rights reserved.
-                </p>
-            </div>
-            <div class="mainMenu flex-1 flex flex-col items-center">
-                <div class="h-full w-full rounded-lg flex flex-col">
-                    <div class="m-8 mx-8 bg-white opacity-70 rounded-lg p-10">
-                        <p class="mb-8">
-                            Bienvenue dans <span class="text-red-700">CastleStorm</span>, <br>
-                            un jeu d'action ayant pour but de survivre le plus longtemps possible.</p>
-                        <p class="mb-8">
-                            Au cours de votre aventure, <br>
-                            vous rencontrerez des ennemis de plus en plus puissants. <br>
-                            Tuer les ennemis vous permettra de gagner de l'expérience, <br>
-                            et de l'argent pour acheter des améliorations dans une boutique tout le long de votre partie. <br>
-                        </p>
-                        <p class="mb-8">
-                            Attention, vous n'avez qu'une seule vie, Mort = <span class="text-red-700"> Game Over ! </span> (｡◕‿◕｡) <br>
-                        </p>
-                        <p class="mb-8">
-                            Pour vous déplacer, utilisez les touches ZQSD, <br>
-                            et pour attaquer, utilisez le clic gauche de votre souris. <br>
-                        </p>
-                        <p>
-                            C'est parti ! Soyez réactif et alerte. Bonne chance ! Vous en aurez besoin :)
-                        </p>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <div id="startButton" class="bg-red-600 rounded p-2 text-2xl text-white hover:scale-110">Jouez</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <canvas id="myCanvas" class="h-full w-full"></canvas>
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="icon" href="assets/img/character/faceright.png">
+  <meta http-equiv="Content-Type" content="application/javascript; charset=UTF-8; text/html; x">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="src/main.ts" type="module"  defer></script>
+  <title>Document</title>
+</head>
+<body class="flex justify-center items-center flex-col h-screen w-screen">
+<!--<div id="startMenu" class="background w-full h-full flex bg-gray-700">-->
+<!--  <div class="sideMenu flex p-6 rounded-e-lg flex-col">-->
+<!--    <div class="flex-1 flex flex-col gap-32">-->
+<!--      <img src="./assets/img/logo_small.png" alt="logo du jeu" class="w-64 h-12">-->
+<!--      <ul class="flex gap-6 flex-col text-xl text-white">-->
+<!--        <li>-->
+<!--          <a href="https://github.com/SebastienThomasDEV/tiny-shooter-game" class="flex items-center">-->
+<!--            <ion-icon name="git-branch-outline" class="mr-2"></ion-icon>-->
+<!--            Répertoire GitHub-->
+<!--          </a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <a href="" class="flex items-center">-->
+<!--            <ion-icon name="laptop-outline" class="mr-2"></ion-icon>-->
+<!--            Site du développeur-->
+<!--          </a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <a href="" class="flex items-center">-->
+<!--            <ion-icon name="bug-outline" class="mr-2"></ion-icon>-->
+<!--            Un bug ? signalez-le !-->
+<!--          </a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <a href="" class="flex items-center">-->
+<!--            <ion-icon name="cafe-outline" class="mr-2"></ion-icon>-->
+<!--            Buy me a coffee !-->
+<!--          </a>-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--    <p class="text-sm text-gray-400 text-center">-->
+<!--      CastleStorm & © 2023, <br>-->
+<!--      411 Inc Ltd. All rights reserved.-->
+<!--    </p>-->
+<!--  </div>-->
+<!--  <div class="mainMenu flex-1 flex flex-col items-center">-->
+<!--    <div class="h-full w-full rounded-lg flex flex-col">-->
+<!--      <div class="m-8 mx-8 bg-white opacity-70 rounded-lg p-10">-->
+<!--        <p class="mb-8">-->
+<!--          Bienvenue dans <span class="text-red-700">CastleStorm</span>, <br>-->
+<!--          un jeu d'action ayant pour but de survivre le plus longtemps possible.</p>-->
+<!--        <p class="mb-8">-->
+<!--          Au cours de votre aventure, <br>-->
+<!--          vous rencontrerez des ennemis de plus en plus puissants. <br>-->
+<!--          Tuer les ennemis vous permettra de gagner de l'expérience, <br>-->
+<!--          et de l'argent pour acheter des améliorations dans une boutique tout le long de votre partie. <br>-->
+<!--        </p>-->
+<!--        <p class="mb-8">-->
+<!--          Attention, vous n'avez qu'une seule vie, Mort = <span class="text-red-700"> Game Over ! </span> (｡◕‿◕｡) <br>-->
+<!--        </p>-->
+<!--        <p class="mb-8">-->
+<!--          Pour vous déplacer, utilisez les touches ZQSD, <br>-->
+<!--          et pour attaquer, utilisez le clic gauche de votre souris. <br>-->
+<!--        </p>-->
+<!--        <p>-->
+<!--          C'est parti ! Soyez réactif et alerte. Bonne chance ! Vous en aurez besoin :)-->
+<!--        </p>-->
+<!--      </div>-->
+<!--      <div class="flex items-center justify-center">-->
+<!--        <div id="startButton" class="bg-red-600 rounded p-2 text-2xl text-white hover:scale-110">Jouez</div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+<canvas id="game_window" class="h-full w-full"></canvas>
+</body>
 </html>
