@@ -4,6 +4,8 @@ export default class Entity {
 
     public x: number;
     public y: number;
+    public dx: number;
+    public dy: number;
     public radius: number;
     context: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
@@ -12,6 +14,8 @@ export default class Entity {
     constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         this.x = x;
         this.y = y;
+        this.dx = 0;
+        this.dy = 0;
         this.radius = radius;
         this.context = context;
         this.canvas = canvas;
