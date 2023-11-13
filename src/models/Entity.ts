@@ -1,4 +1,4 @@
-import State from "../vendor/State";
+import GameState from "../vendor/GameState";
 
 export default class Entity {
 
@@ -9,9 +9,9 @@ export default class Entity {
     public radius: number;
     context: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
-    state: State;
+    state: GameState;
 
-    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
+    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: GameState) {
         this.x = x;
         this.y = y;
         this.dx = 0;

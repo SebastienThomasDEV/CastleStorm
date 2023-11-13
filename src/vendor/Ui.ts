@@ -2,6 +2,7 @@ export default class Ui {
 
 
     public static draw(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): void {
+        this.clear(canvas, context);
         context.fillStyle = 'rgb(0, 0, 0)';
         context.fillRect(0, 0, canvas.width, canvas.height);
     }

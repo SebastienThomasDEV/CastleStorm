@@ -1,18 +1,26 @@
-export default class State {
-    enemies: any;
-    player: any;
-    projectiles: any;
-    loots: any;
+import Entity from "../model/Entity";
+import Player from "../entities/Player";
+
+
+export default class GameState {
+    enemies: Entity[];
+    player: Player | null;
+    projectiles: Entity[];
+    loots: Entity[];
     score: number;
     level: number;
+    context: CanvasRenderingContext2D;
+    canvas: HTMLCanvasElement;
 
-    constructor() {
+    constructor(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
         this.enemies = [];
         this.player = null;
         this.projectiles = [];
         this.loots = [];
         this.score = 0;
         this.level = 1;
+        this.context = context;
+        this.canvas = canvas;
     }
 
     public addEnemy(enemy: any): void {
@@ -63,19 +71,19 @@ export default class State {
         return this.level;
     }
 
-    getEnemies(): any {
+    getEnemies(): Entity[] {
         return this.enemies;
     }
 
-    getPlayer(): any {
+    getPlayer(): Player | null {
         return this.player;
     }
 
-    getProjectiles(): any {
+    getProjectiles(): Entity[] {
         return this.projectiles;
     }
 
-    getLoots(): any {
+    getLoots(): Entity[] {
         return this.loots;
     }
 

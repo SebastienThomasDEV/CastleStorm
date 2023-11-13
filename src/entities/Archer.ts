@@ -1,8 +1,8 @@
-import Entity from "../model/Entity";
-import State from "../vendor/State";
+import Entity from "../models/Entity";
+import GameState from "../vendor/GameState";
 
 export default class Archer extends Entity {
-    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
+    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: GameState) {
         super(x, y, 10, context, canvas, state);
     }
 
