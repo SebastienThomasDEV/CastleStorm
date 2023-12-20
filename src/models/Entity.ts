@@ -1,25 +1,37 @@
-import GameState from "../vendor/GameState";
 
 export default class Entity {
 
     public x: number;
     public y: number;
-    public dx: number;
-    public dy: number;
+    // v for velocity
+    public v: {
+        x: number,
+        y: number
+    }
+    // t for target
+    public t: {
+        x: number,
+        y: number
+    }
     public radius: number;
     context: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
-    state: GameState;
 
-    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: GameState) {
+    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
         this.x = x;
         this.y = y;
-        this.dx = 0;
-        this.dy = 0;
+        this.v = {
+            x: 0,
+            y: 0
+        }
+
+        this.t = {
+            x: 0,
+            y: 0
+        }
         this.radius = radius;
         this.context = context;
         this.canvas = canvas;
-        this.state = state;
     }
 
     public draw(): void {
@@ -30,11 +42,4 @@ export default class Entity {
         throw new Error("Method not implemented.");
     }
 
-    public move(): void {
-        throw new Error("Method not implemented.");
-    }
-
-    public collision(): void {
-        throw new Error("Method not implemented.");
-    }
 }

@@ -1,7 +1,5 @@
-
-
 import Renderer from "./Renderer";
-// import State from "./State";
+import State from "./State";
 
 export class Game {
 
@@ -11,14 +9,17 @@ export class Game {
     then: number;
     elapsed: number;
     renderer: Renderer;
+    canvas: HTMLCanvasElement;
 
     constructor(canvas: HTMLCanvasElement) {
-        this.renderer = new Renderer(canvas)
+        this.renderer = new Renderer(canvas, new State())
         this.then = 0;
         this.elapsed = 0;
-        this.fps = 1
-        this.requestId = 0
+        this.fps = 60;
+        this.requestId = 0;
         this.isRunning = false;
+        this.canvas = canvas;
+        this.autoResize();
     }
 
     public loop(): void {
@@ -29,7 +30,6 @@ export class Game {
         if (delta > frameInterval) {
             this.then = now - (delta / frameInterval);
             this.elapsed++
-            console.log(this.elapsed)
             this.renderer.render()
         }
     }
@@ -42,5 +42,13 @@ export class Game {
         return this.fps;
     }
 
-
+    private autoResize(): void {
+        const resizeObserver = new ResizeObserver((entries) => {
+            const { width, height } = entries[0].contentRect;
+            this.canvas.width = width;
+            this.canvas.height = height;
+            this.renderer.render();
+        })
+        resizeObserver.observe(this.canvas);
+    }
 }
