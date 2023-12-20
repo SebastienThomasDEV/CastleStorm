@@ -1,4 +1,3 @@
-import State from "../vendor/State";
 import Entity from "./Entity";
 
 export default class Prop extends Entity {
@@ -8,9 +7,8 @@ export default class Prop extends Entity {
         y: number,
         radius: number,
         context: CanvasRenderingContext2D,
-        canvas: HTMLCanvasElement,
-        state: State) {
-        super(x, y, radius, context, canvas, state);
+        canvas: HTMLCanvasElement) {
+        super(x, y, radius, context, canvas);
     }
 
     draw() {

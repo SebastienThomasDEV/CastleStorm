@@ -17,7 +17,7 @@ export default class Player extends Entity {
         y: 0
     }
     private angle: number;
-    private speed: number = 3;
+    private speed: number = 10;
 
 
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, private state?: State) {
@@ -72,17 +72,38 @@ export default class Player extends Entity {
                     this.isMoving = true;
                     switch (keys[i]) {
                         case 'z':
-                            this.t.y -= this.speed;
+                            if (this.t.y > 0) {
+                                this.t.y -= this.speed;
+                            } else {
+                                this.t.y = 0;
+                            }
                             break;
                         case 'q':
-                            this.t.x -= this.speed;
+                            if (this.t.x > 0) {
+                                this.t.x -= this.speed;
+                            } else {
+                                this.t.x = 0;
+                            }
                             break;
                         case 's':
-                            this.t.y += this.speed;
+                            if (this.t.y < this.canvas.height) {
+                                this.t.y += this.speed;
+                            } else {
+                                this.t.y = this.canvas.height;
+                            }
                             break;
                         case 'd':
-                            this.t.x += this.speed;
+                            if (this.t.x < this.canvas.width) {
+                                this.t.x += this.speed;
+                            } else {
+                                this.t.x = this.canvas.width;
+                            }
                             break;
+                        case ' ':
+                            // dash mechanic
+
+                            break;
+
                     }
                 }
             }
@@ -108,18 +129,19 @@ export default class Player extends Entity {
         }
         if (this.inputs['click']) {
             this.angle = Math.atan2(this.mouse.y - this.y, this.mouse.x - this.x);
-            this.state?.addEntity(new Projectile(this.x, this.y, this.context, this.canvas, { x: Math.cos(this.angle) * 20, y: Math.sin(this.angle) * 20 }));
+            this.state?.addEntity(new Projectile(this.x, this.y, this.context, this.canvas, {
+                x: Math.cos(this.angle) * 20,
+                y: Math.sin(this.angle) * 20
+            }));
         }
     }
 
     clickEvent(): void {
         this.canvas.addEventListener('mousedown', () => {
             this.inputs['click'] = true;
-            console.log(this.inputs['click']);
         });
         this.canvas.addEventListener('mouseup', () => {
             this.inputs['click'] = false;
-            console.log(this.inputs['click']);
         });
     }
 
