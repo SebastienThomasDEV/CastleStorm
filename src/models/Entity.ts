@@ -3,6 +3,7 @@ export default class Entity {
 
     public x: number;
     public y: number;
+    public sprite: HTMLImageElement = new Image();
     // v for velocity
     public v: {
         x: number,

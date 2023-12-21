@@ -12,11 +12,7 @@ export class Projectile extends Entity {
     }
 
     public draw(): void {
-        this.context.fillStyle = 'rgb(0, 0, 255)';
-        this.context.beginPath();
-        this.context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        this.context.fill();
-        this.context.closePath();
+
     }
 
     public update(): void {

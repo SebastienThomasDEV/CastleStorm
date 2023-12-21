@@ -5,6 +5,7 @@ import {Projectile} from "./Projectile";
 
 export default class Player extends Entity {
     public isMoving: boolean;
+    private weapon: HTMLImageElement = new Image();
     private inputs: any = {
         'z': false,
         'q': false,
@@ -22,26 +23,40 @@ export default class Player extends Entity {
 
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, private state?: State) {
         super(x, y, 10, context, canvas);
+        this.initialize();
         this.isMoving = false;
         this.angle = 0;
         if (this.state === undefined) {
             throw new Error("State is undefined");
         }
-        this.initialize();
+
     }
 
     public draw(): void {
-        this.context.fillStyle = 'rgb(0, 255, 0)';
-        this.context.beginPath();
-        this.context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        this.context.fill();
-        this.context.closePath();
+        this.context.save();
+        this.context.translate(this.x, this.y);
+        this.context.rotate(this.angle);
+        this.context.drawImage(this.weapon, 0, 0, 16, 16, -this.radius, -this.radius, 24, 24);
+        this.context.restore();
+        // let SCALE = 1;
+        // const WIDTH = 16;
+        // const HEIGHT = 32;
+        // const SCALED_WIDTH = SCALE * WIDTH;
+        // const SCALED_HEIGHT = SCALE * HEIGHT;
+        // console.log(this.sprite)
+        // this.context.drawImage(this.sprite, 0, 0, WIDTH, HEIGHT, this.x, this.y, SCALED_WIDTH, SCALED_HEIGHT);
     }
 
     private initialize(): void {
         this.keyEvent();
         this.clickEvent();
         this.mouseEvent();
+        this.loadSprite();
+    }
+
+    private loadSprite(): void {
+        this.sprite.src = './src/sprites/player.png';
+        this.weapon.src = './src/sprites/bow.png';
     }
 
     private keyEvent(): void {
@@ -128,7 +143,6 @@ export default class Player extends Entity {
             }
         }
         if (this.inputs['click']) {
-            this.angle = Math.atan2(this.mouse.y - this.y, this.mouse.x - this.x);
             this.state?.addEntity(new Projectile(this.x, this.y, this.context, this.canvas, {
                 x: Math.cos(this.angle) * 20,
                 y: Math.sin(this.angle) * 20
@@ -147,6 +161,7 @@ export default class Player extends Entity {
 
     mouseEvent(): void {
         this.canvas.addEventListener('mousemove', (e) => {
+            this.angle = Math.atan2(this.mouse.y - this.y, this.mouse.x - this.x);
             this.mouse = {
                 x: e.clientX,
                 y: e.clientY

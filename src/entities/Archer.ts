@@ -1,9 +1,8 @@
 import Entity from "../models/Entity";
-import State from "../vendor/State";
 
 export default class Archer extends Entity {
-    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
-        super(x, y, 10, context, canvas, state);
+    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+        super(x, y, 10, context, canvas);
     }
 
     public draw(): void {

@@ -33,7 +33,8 @@ export default class Renderer {
         }
 
         if (!playerInstance) {
-            this.state.addEntity(new Player(0, 0, this.context, this.canvas, this.state));
+            // spawn player in middle of screen
+            this.state.addEntity(new Player(100, 100, this.context, this.canvas, this.state));
         }
     }
 
