@@ -3,11 +3,17 @@ export class SpriteSheet {
     private rows: number = 0;
     private cols: number = 0;
     private frames: number[] = [];
-    constructor(
-        public sprite: HTMLImageElement,
-        public width: number,
-        public height: number,
-    ) {}
+    // public sprite: HTMLImageElement;
+    public frameWidth: number;
+    public frameHeight: number;
+
+    constructor(frameWidth: number, frameHeight: number, rows: number, cols: number) {
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        this.rows = rows;
+        this.cols = cols;
+        this.create(rows, cols);
+    }
 
     public create(rows: number, cols:number ): number[][] {
         const matrix: number[][] = [];
@@ -23,10 +29,10 @@ export class SpriteSheet {
         return matrix;
     }
 
-    public setFrame(frameId: number, row: number, col: number): void {
-        this.matrix[row][col] = frameId;
-        this.frames.push(frameId);
-        console.log(this.frames);
+    public setFrame(frame: any, row: number, col: number): SpriteSheet {
+        this.matrix[row][col] = frame;
+        this.frames.push(this.frames.length + 1);
+        return this;
     }
 
     public getFrameById(frameId: number): number[] {
@@ -40,6 +46,18 @@ export class SpriteSheet {
             }
         }
         return frame;
+    }
+
+    public getFramesCount(): number {
+        return this.frames.length;
+    }
+
+    getFrameHeight(): number {
+        return this.frameHeight;
+    }
+
+    getFrameWidth(): number {
+        return this.frameWidth;
     }
 
 }

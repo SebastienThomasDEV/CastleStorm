@@ -31,33 +31,48 @@ export default class Player extends Entity {
     }
 
     public draw(): void {
-        const frames = [0, 1, 2, 3];
+
+        let spriteSheet = new SpriteSheet(16, 16, 3, 3);
+        spriteSheet
+            .setFrame({x: 0, y: 0}, 0, 0)
+            .setFrame({x: 0, y: spriteSheet.getFrameHeight()}, 1, 0)
+            .setFrame({x: spriteSheet.getFrameWidth(), y: 0}, 0, 1)
+            .setFrame({x: spriteSheet.getFrameWidth(), y: spriteSheet.getFrameHeight()}, 1, 1)
+
         if (this.delay > this.limit) {
-            if (this.frame >= frames.length - 1) {
+            if (this.frame >= spriteSheet.getFramesCount() - 1) {
                 this.frame = 0;
             } else {
-                this.frame++;
             }
             this.delay = 0;
         } else {
             this.delay++;
         }
-        let spriteSheet = new SpriteSheet(this.sprite, 16, 16);
-        console.log(spriteSheet);
-        alert('test');
-        let sy = 0;
-        let sx = 0;
-        const sw = 16;
-        const sh = 16;
-        const dx = -8;
-        const dy = -8;
-        const dh = 16;
-        const dw = 16;
-        this.context.save();
-        this.context.translate(this.x, this.y);
-        this.context.rotate(this.angle);
-        this.context.drawImage(this.weapon, sx * this.frame, sy, sw, sh, dx, dy, dw, dh);
-        this.context.beginPath();
+        for (let i = 0; i < spriteSheet.getFramesCount(); i++) {
+            if (this.frame === i) {
+                console.log(spriteSheet.getFrameById(i));
+                this.context.save();
+                this.context.translate(this.x, this.y);
+                this.context.rotate(this.angle);
+                this.context.drawImage(this.sprite, spriteSheet.getFrameById(i).x, spriteSheet.getFrameById(i).y, spriteSheet.getFrameWidth(), spriteSheet.getFrameHeight(), this.x, this.y, 16, 16);
+                this.context.restore();
+            }
+        }
+        // let sy = 0;
+        // let sx = 0;
+        // const sw = 16;
+        // const sh = 16;
+        // const dx = -8;
+        // const dy = -8;
+        // const dh = 16;
+        // const dw = 16;
+        // this.context.save();
+        // this.context.translate(this.x, this.y);
+        // this.context.rotate(this.angle);
+        // this.context.drawImage(this.weapon, sx * this.frame, sy, sw, sh, dx, dy, dw, dh);
+        // console.log(spriteSheet);
+        // alert('test');
+        // this.context.beginPath();
 
 
 
