@@ -4,6 +4,7 @@ export default class Entity {
 
     public x: number;
     public y: number;
+    public frame: number;
     public sprite: HTMLImageElement = new Image();
     public state: State;
     public angle: number;
@@ -26,6 +27,7 @@ export default class Entity {
         this.x = x;
         this.y = y;
         this.angle = 0;
+        this.frame = 0;
         this.radius = radius;
         this.context = context;
         this.canvas = canvas;
