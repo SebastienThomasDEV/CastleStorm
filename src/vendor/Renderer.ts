@@ -2,6 +2,7 @@ import Ui from "./Ui";
 import Entity from "../models/Entity";
 import State from "./State";
 import Player from "../entities/Player";
+import Archer from "../entities/Archer";
 
 
 export default class Renderer {
@@ -34,7 +35,7 @@ export default class Renderer {
 
         if (!playerInstance) {
             // spawn player in middle of screen
-            this.state.addEntity(new Player(this.canvas.width / 2, this.canvas.height / 2, this.context, this.canvas, this.state));
+            this.state.addEntity(new Archer(this.canvas.width / 2, this.canvas.height / 2, this.context, this.canvas, this.state));
         }
     }
 

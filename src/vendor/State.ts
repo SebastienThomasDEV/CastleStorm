@@ -3,10 +3,28 @@ import Entity from "../models/Entity";
 
 export default class State {
     entities: Entity[] = [];
-    score: number = 0;
-    level: number = 0;
+    mouse: {
+        x: number,
+        y: number
+    }
 
-    constructor() {}
+    playerPos: {
+        x: number,
+        y: number
+    };
+
+    constructor() {
+        this.mouse = {
+            x: 0,
+            y: 0
+        }
+        this.playerPos = {
+            x: 0,
+            y: 0
+        }
+        this.mouseEvent();
+    }
+
 
     public addEntity(entity: Entity): void {
         this.entities.push(entity);
@@ -24,20 +42,13 @@ export default class State {
         this.entities = [];
     }
 
-    levelUp(): void {
-        this.level++;
-    }
-
-    addScore(score: number): void {
-        this.score += score;
-    }
-
-    getScore(): number {
-        return this.score;
-    }
-
-    getLevel(): number {
-        return this.level;
+    mouseEvent(): void {
+        document.addEventListener('mousemove', (e) => {
+            this.mouse = {
+                x: e.pageX,
+                y: e.pageY
+            }
+        });
     }
 
 

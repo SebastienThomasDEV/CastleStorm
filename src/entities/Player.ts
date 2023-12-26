@@ -1,107 +1,48 @@
 import Entity from "../models/Entity";
 import State from "../vendor/State";
-import {Projectile} from "./Projectile";
-import {SpriteSheet} from "../utils/SpriteSheet";
-
 
 export default class Player extends Entity {
-    public isMoving: boolean;
-    private weapon: HTMLImageElement = new Image();
+    public isMoving: boolean = false;
+    public isFiring: boolean = false;
+    public weapon: HTMLImageElement = new Image();
     private inputs: any = {
         'z': false,
         'q': false,
         's': false,
         'd': false,
-        'click': false,
-    };
-    private mouse: any = {
-        x: 0,
-        y: 0
     };
     delay: number = 0;
-    limit: number = 40;
+    limit: number = 20;
     private speed: number = 10;
 
 
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         super(x, y, 10, context, canvas, state);
         this.initialize();
-        this.isMoving = false;
         this.angle = 0;
     }
 
     public draw(): void {
-
-        let spriteSheet = new SpriteSheet(16, 16, 3, 3);
-        spriteSheet
-            .setFrame({x: 0, y: 0}, 0, 0)
-            .setFrame({x: 0, y: spriteSheet.getFrameHeight()}, 1, 0)
-            .setFrame({x: spriteSheet.getFrameWidth(), y: 0}, 0, 1)
-            .setFrame({x: spriteSheet.getFrameWidth(), y: spriteSheet.getFrameHeight()}, 1, 1)
-
-        if (this.delay > this.limit) {
-            if (this.frame >= spriteSheet.getFramesCount() - 1) {
-                this.frame = 0;
-            } else {
-            }
-            this.delay = 0;
-        } else {
-            this.delay++;
-        }
-        for (let i = 0; i < spriteSheet.getFramesCount(); i++) {
-            if (this.frame === i) {
-                console.log(spriteSheet.getFrameById(i));
-                this.context.save();
-                this.context.translate(this.x, this.y);
-                this.context.rotate(this.angle);
-                this.context.drawImage(this.sprite, spriteSheet.getFrameById(i).x, spriteSheet.getFrameById(i).y, spriteSheet.getFrameWidth(), spriteSheet.getFrameHeight(), this.x, this.y, 16, 16);
-                this.context.restore();
-            }
-        }
-        // let sy = 0;
-        // let sx = 0;
-        // const sw = 16;
-        // const sh = 16;
-        // const dx = -8;
-        // const dy = -8;
-        // const dh = 16;
-        // const dw = 16;
-        // this.context.save();
-        // this.context.translate(this.x, this.y);
-        // this.context.rotate(this.angle);
-        // this.context.drawImage(this.weapon, sx * this.frame, sy, sw, sh, dx, dy, dw, dh);
-        // console.log(spriteSheet);
-        // alert('test');
-        // this.context.beginPath();
-
-
-
-
-        // draw a crosshair
-        this.context.moveTo(-this.radius / 2, 0);
-        this.context.lineTo(this.radius / 2, 0);
-        this.context.moveTo(0, -this.radius / 2);
-        this.context.lineTo(0, this.radius / 2);
-
-        this.context.strokeStyle = 'red';
-        this.context.stroke();
-        this.context.closePath();
-        this.context.restore();
-
-        // // dessin de la ligne de tir du personnage en fonction du curseur (pour le debug) et un arc de cercle pour le curseur
+        // draw a outline of the player
         this.context.beginPath();
-        this.context.moveTo(this.x, this.y);
-        this.context.lineTo(this.mouse.x, this.mouse.y);
-        this.context.strokeStyle = 'red';
-        this.context.stroke();
+        this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        this.context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.context.fill();
         this.context.closePath();
+
+        // // // dessin de la ligne de tir du personnage en fonction du curseur (pour le debug) et un arc de cercle pour le curseur
+        // this.context.beginPath();
+        // this.context.moveTo(this.x, this.y);
+        // this.context.lineTo(this.mouse.x, this.mouse.y);
+        // this.context.strokeStyle = 'red';
+        // this.context.stroke();
+        // this.context.closePath();
     }
 
     private initialize(): void {
+        this.loadSprite();
         this.keyEvent();
         this.clickEvent();
-        this.mouseEvent();
-        this.loadSprite();
     }
 
     private loadSprite(): void {
@@ -126,7 +67,9 @@ export default class Player extends Entity {
 
     public update(): void {
         this.draw();
-        this.angle = Math.atan2(this.mouse.y - this.y, this.mouse.x - this.x);
+        this.state.playerPos.x = this.x;
+        this.state.playerPos.y = this.y;
+        this.angle = Math.atan2(this.state.mouse.y - this.y, this.state.mouse.x - this.x);
         if (this.angle < 0) {
             this.angle += Math.PI * 2;
         }
@@ -149,13 +92,13 @@ export default class Player extends Entity {
         }
         for (const key in this.inputs) {
             if (this.inputs[key]) {
-                if (key === 'click') {
-                    this.state?.addEntity(new Projectile(this.x, this.y, this.context, this.canvas, this.state,
-                        {
-                        x: Math.cos(this.angle) * 20,
-                        y: Math.sin(this.angle) * 20
-                    }));
-                }
+                // if (key === 'click') {
+                //     this.state?.addEntity(new Projectile(this.x, this.y, this.context, this.canvas, this.state,
+                //         {
+                //         x: Math.cos(this.angle) * 20,
+                //         y: Math.sin(this.angle) * 20
+                //     }));
+                // }
                 if (key === 'z') {
                     if (this.target.y > 0) {
                         this.target.y -= this.speed;
@@ -193,21 +136,17 @@ export default class Player extends Entity {
 
     clickEvent(): void {
         this.canvas.addEventListener('mousedown', () => {
-            this.inputs['click'] = true;
+            this.hookMouseDown();
+            this.isFiring = true;
         });
         this.canvas.addEventListener('mouseup', () => {
-            this.inputs['click'] = false;
+            this.hookMouseUp();
+            this.isFiring = false;
         });
     }
 
-    mouseEvent(): void {
-        this.canvas.addEventListener('mousemove', (e) => {
-            this.mouse = {
-                x: e.pageX,
-                y: e.pageY
-            }
-        });
-    }
+    hookMouseDown(): void {}
+    hookMouseUp(): void {}
 
     debounce(func: any, wait: number, immediate: boolean) {
         let timeout: any;

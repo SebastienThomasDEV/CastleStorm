@@ -1,15 +1,16 @@
 export class SpriteSheet {
     private matrix: number[][] = [];
-    private rows: number = 0;
-    private cols: number = 0;
+    rows: number = 0;
+    cols: number = 0;
     private frames: number[] = [];
-    // public sprite: HTMLImageElement;
+    public sprite: HTMLImageElement;
     public frameWidth: number;
     public frameHeight: number;
 
-    constructor(frameWidth: number, frameHeight: number, rows: number, cols: number) {
+    constructor(frameWidth: number, frameHeight: number, rows: number, cols: number, sprite: HTMLImageElement) {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
+        this.sprite = sprite;
         this.rows = rows;
         this.cols = cols;
         this.create(rows, cols);
@@ -29,35 +30,29 @@ export class SpriteSheet {
         return matrix;
     }
 
-    public setFrame(frame: any, row: number, col: number): SpriteSheet {
-        this.matrix[row][col] = frame;
+    public setFrame(id: any, row: number, col: number): SpriteSheet {
+        this.matrix[row - 1][col - 1] = id;
         this.frames.push(this.frames.length + 1);
         return this;
-    }
-
-    public getFrameById(frameId: number): number[] {
-        const frame: number[] = [];
-        for (let i = 0; i < this.rows; i++) {
-            for (let j = 0; j < this.cols; j++) {
-               if (this.matrix[i][j] === frameId) {
-                   frame[0] = i;
-                   frame[1] = j;
-               }
-            }
-        }
-        return frame;
     }
 
     public getFramesCount(): number {
         return this.frames.length;
     }
 
-    getFrameHeight(): number {
-        return this.frameHeight;
-    }
+    public drawFrame(id: number, context: CanvasRenderingContext2D): void {
+        let row: number = 0;
+        let col: number = 0;
+        for (let i = 0; i < this.matrix.length; i++) {
+            for (let j = 0; j < this.matrix[i].length; j++) {
+                if (this.matrix[i][j] === id + 1) {
+                    row = i;
+                    col = j;
+                }
+            }
 
-    getFrameWidth(): number {
-        return this.frameWidth;
+        }
+        context.drawImage(this.sprite, col * this.frameWidth, row * this.frameHeight, this.frameWidth, this.frameHeight, -8, -8, this.frameWidth, this.frameHeight);
     }
 
 }

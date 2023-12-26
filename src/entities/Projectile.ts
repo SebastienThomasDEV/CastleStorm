@@ -2,15 +2,16 @@ import Entity from "../models/Entity";
 import State from "../vendor/State";
 
 export class Projectile extends Entity {
+    isShot: boolean = false;
+    aimAngle: number = 0;
+    launchAngle: number = 0;
 
-    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement , state: State, private speed: { x: number, y: number }) {
+    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement , state: State) {
         super(x, y, 10, context, canvas, state);
         this.velocity = {
-            x: this.speed.x,
-            y: this.speed.y
+            x: 0,
+            y: 0
         }
-
-        this.angle = Math.atan2(this.velocity.y, this.velocity.x);
         this.initialize();
     }
 
@@ -30,8 +31,16 @@ export class Projectile extends Entity {
         const dw = 16;
         // image de flèche
         this.context.save();
-        this.context.translate(this.x, this.y);
-        this.context.rotate(this.angle);
+        if (this.isShot) {
+            this.context.translate(this.x, this.y);
+        } else {
+            this.context.translate(this.state.playerPos.x, this.state.playerPos.y);
+        }
+        if (!this.isShot) {
+            this.context.rotate(this.aimAngle);
+        } else {
+            this.context.rotate(this.angle);
+        }
         this.context.drawImage(this.sprite, sx, sy, sw, sh, dx, dy, dw, dh);
         // rotation de la flèche
         this.context.beginPath();
@@ -39,11 +48,24 @@ export class Projectile extends Entity {
     }
 
     public update(): void {
+        this.aimAngle = Math.atan2(this.state.mouse.y - this.y, this.state.mouse.x - this.x);
         this.angle = Math.atan2(this.velocity.y, this.velocity.x);
         this.draw();
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        if (this.isShot) {
+            if (this.launchAngle === 0) {
+                this.launchAngle = this.aimAngle;
+            this.angle = Math.atan2(this.velocity.y, this.velocity.x);
+            }
+            this.velocity.x = Math.cos(this.launchAngle) * 20;
+            this.velocity.y = Math.sin(this.launchAngle) * 20;
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+        } else {
+            this.x = this.state.playerPos.x;
+            this.y = this.state.playerPos.y;
+        }
         if (this.isOutOfBounds()) {
+            console.log("isOutOfBounds");
             this.state.removeEntity(this);
         }
 
@@ -56,4 +78,10 @@ export class Projectile extends Entity {
     private loadSprite(): void {
         this.sprite.src = "./src/sprites/bow.png";
     }
+
+    launch(): void {
+        this.isShot = true;
+    }
+
+
 }
