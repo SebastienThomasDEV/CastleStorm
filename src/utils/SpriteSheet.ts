@@ -52,7 +52,7 @@ export class SpriteSheet {
             }
 
         }
-        context.drawImage(this.sprite, col * this.frameWidth, row * this.frameHeight, this.frameWidth, this.frameHeight, -8, -8, this.frameWidth, this.frameHeight);
+        context.drawImage(this.sprite, col * this.frameWidth, row * this.frameHeight, this.frameWidth, this.frameHeight, -16, -16, this.frameWidth * 2, this.frameHeight * 2);
     }
 
 }

@@ -1,12 +1,12 @@
-import Entity from "../models/Entity";
-import State from "../vendor/State";
+import State from "../../vendor/State";
+import {Projectile} from "../../models/Projectile";
 
-export class Projectile extends Entity {
+export class Arrow extends Projectile {
     isShot: boolean = false;
     aimAngle: number = 0;
     launchAngle: number = 0;
 
-    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement , state: State) {
+    constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         super(x, y, 10, context, canvas, state);
         this.velocity = {
             x: 0,
@@ -25,10 +25,10 @@ export class Projectile extends Entity {
         const sy = 16
         const sw = 16;
         const sh = 16;
-        const dx = -8;
-        const dy = -8;
-        const dh = 16;
-        const dw = 16;
+        const dx = -16;
+        const dy = -16;
+        const dh = 32;
+        const dw = 32;
         // image de flèche
         this.context.save();
         if (this.isShot) {
@@ -54,7 +54,7 @@ export class Projectile extends Entity {
         if (this.isShot) {
             if (this.launchAngle === 0) {
                 this.launchAngle = this.aimAngle;
-            this.angle = Math.atan2(this.velocity.y, this.velocity.x);
+                this.angle = Math.atan2(this.velocity.y, this.velocity.x);
             }
             this.velocity.x = Math.cos(this.launchAngle) * 20;
             this.velocity.y = Math.sin(this.launchAngle) * 20;

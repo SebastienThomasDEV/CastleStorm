@@ -1,11 +1,11 @@
-import Player from "./Player";
-import {Projectile} from "./Projectile";
-import {SpriteSheet} from "../utils/SpriteSheet";
+import Player from "../../models/Player";
+import {Arrow} from "../projectiles/Arrow";
+import {SpriteSheet} from "../../utils/SpriteSheet";
 
 export default class Archer extends Player {
     private loaded: boolean = false;
     private ammunitions: number = 10;
-    private bullet: Projectile|null = null;
+    private bullet: Arrow|null = null;
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: any) {
         super(x, y, context, canvas, state);
     }
@@ -48,7 +48,7 @@ export default class Archer extends Player {
         if (this.isFiring) {
             if (this.loaded) {
                 this.ammunitions--;
-                this.bullet?.launch();
+                this.bullet!.launch();
                 this.bullet = null;
                 this.loaded = false;
                 this.isFiring = false;
@@ -62,12 +62,13 @@ export default class Archer extends Player {
         if (!this.isFiring) {
             this.isFiring = true;
             if (!this.bullet) {
-                this.bullet = new Projectile(this.x, this.y, this.context, this.canvas, this.state);
+                this.bullet = new Arrow(this.x, this.y, this.context, this.canvas, this.state);
                 this.state.addEntity(this.bullet);
             }
         }
         super.hookMouseDown();
     }
+
 
 
 }
