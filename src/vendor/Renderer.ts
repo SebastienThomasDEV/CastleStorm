@@ -4,6 +4,7 @@ import State from "./State";
 import Player from "../models/Player";
 // import Archer from "../entities/classes/Archer";
 import Warrior from "../entities/classes/Warrior";
+import Archer from "../entities/classes/Archer";
 
 
 export default class Renderer {

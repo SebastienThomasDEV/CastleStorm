@@ -3,26 +3,18 @@ import Entity from "../models/Entity";
 
 export default class State {
     entities: Entity[] = [];
-    mouse: {
-        x: number,
-        y: number
+    public mouse = {
+        x: 0,
+        y: 0
     }
 
-    playerPos: {
-        x: number,
-        y: number
-    };
+    public player = {
+        x: 0,
+        y: 0,
+    }
 
     constructor() {
-        this.mouse = {
-            x: 0,
-            y: 0
-        }
-        this.playerPos = {
-            x: 0,
-            y: 0
-        }
-        this.mouseEvent();
+        this.mouseMoveEvent();
     }
 
 
@@ -42,7 +34,7 @@ export default class State {
         this.entities = [];
     }
 
-    mouseEvent(): void {
+    mouseMoveEvent(): void {
         document.addEventListener('mousemove', (e) => {
             this.mouse = {
                 x: e.pageX,
@@ -50,6 +42,7 @@ export default class State {
             }
         });
     }
+
 
 
 

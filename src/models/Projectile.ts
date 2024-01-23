@@ -1,15 +1,20 @@
 import Entity from "./Entity";
+import State from "../vendor/State";
 
 export class Projectile extends Entity {
-    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: any) {
+    launchAngle: number = 0;
+    isLaunch: boolean = false;
+    velocity = {
+        x: 0,
+        y: 0
+    }
+
+    constructor(x: number, y: number, radius: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         super(x, y, radius, context, canvas, state);
     }
 
-    public draw(): void {
-        throw new Error("Method not implemented.");
+    public isOutOfBounds(): boolean {
+        return this.x < 0 || this.x > this.canvas.width || this.y < 0 || this.y > this.canvas.height;
     }
 
-    public update(): void {
-        throw new Error("Method not implemented.");
-    }
 }

@@ -23,12 +23,14 @@ export default class Player extends Entity {
 
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         super(x, y, 10, context, canvas, state);
-        this.initialize();
         this.angle = 0;
         this.dashLocation = {
             x: this.x,
             y: this.y
         }
+        this.loadSprite();
+        this.keyEvent();
+        this.clickEvent();
     }
 
     public draw(): void {
@@ -59,12 +61,6 @@ export default class Player extends Entity {
 
     }
 
-    private initialize(): void {
-        this.loadSprite();
-        this.keyEvent();
-        this.clickEvent();
-    }
-
     private loadSprite(): void {
         this.sprite.src = './src/sprites/player.png';
         this.weapon.src = './src/sprites/bow.png';
@@ -89,8 +85,8 @@ export default class Player extends Entity {
 
     public update(): void {
         this.draw();
-        this.state.playerPos.x = this.x;
-        this.state.playerPos.y = this.y;
+        this.state.player.x = this.x;
+        this.state.player.y = this.y;
         this.angle = Math.atan2(this.state.mouse.y - this.y, this.state.mouse.x - this.x);
         if (this.angle < 0) {
             this.angle += Math.PI * 2;
@@ -167,8 +163,6 @@ export default class Player extends Entity {
     hookMouseUp(): void {}
     hookKeyDown(): void {}
     hookKeyUp(): void {}
-    hookUpdate(): void {}
-    hookDraw(): void {}
 
 
 }

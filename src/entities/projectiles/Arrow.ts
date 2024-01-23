@@ -2,16 +2,8 @@ import State from "../../vendor/State";
 import {Projectile} from "../../models/Projectile";
 
 export class Arrow extends Projectile {
-    isShot: boolean = false;
-    aimAngle: number = 0;
-    launchAngle: number = 0;
-
     constructor(x: number, y: number, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: State) {
         super(x, y, 10, context, canvas, state);
-        this.velocity = {
-            x: 0,
-            y: 0
-        }
         this.initialize();
     }
 
@@ -31,15 +23,15 @@ export class Arrow extends Projectile {
         const dw = 32;
         // image de flèche
         this.context.save();
-        if (this.isShot) {
+        if (this.isLaunch) {
             this.context.translate(this.x, this.y);
         } else {
-            this.context.translate(this.state.playerPos.x, this.state.playerPos.y);
+            this.context.translate(this.state.player.x, this.state.player.y);
         }
-        if (!this.isShot) {
-            this.context.rotate(this.aimAngle);
-        } else {
+        if (!this.isLaunch) {
             this.context.rotate(this.angle);
+        } else {
+            this.context.rotate(this.launchAngle);
         }
         this.context.drawImage(this.sprite, sx, sy, sw, sh, dx, dy, dw, dh);
         // rotation de la flèche
@@ -48,12 +40,11 @@ export class Arrow extends Projectile {
     }
 
     public update(): void {
-        this.aimAngle = Math.atan2(this.state.mouse.y - this.y, this.state.mouse.x - this.x);
-        this.angle = Math.atan2(this.velocity.y, this.velocity.x);
+        this.angle = Math.atan2(this.state.mouse.y - this.y, this.state.mouse.x - this.x);
         this.draw();
-        if (this.isShot) {
+        if (this.isLaunch) {
             if (this.launchAngle === 0) {
-                this.launchAngle = this.aimAngle;
+                this.launchAngle = this.angle;
                 this.angle = Math.atan2(this.velocity.y, this.velocity.x);
             }
             this.velocity.x = Math.cos(this.launchAngle) * 20;
@@ -61,8 +52,8 @@ export class Arrow extends Projectile {
             this.x += this.velocity.x;
             this.y += this.velocity.y;
         } else {
-            this.x = this.state.playerPos.x;
-            this.y = this.state.playerPos.y;
+            this.x = this.state.player.x;
+            this.y = this.state.player.y;
         }
         if (this.isOutOfBounds()) {
             console.log("isOutOfBounds");
@@ -71,16 +62,14 @@ export class Arrow extends Projectile {
 
     }
 
-    private isOutOfBounds(): boolean {
-        return this.x < 0 || this.x > this.canvas.width || this.y < 0 || this.y > this.canvas.height;
-    }
+
 
     private loadSprite(): void {
         this.sprite.src = "./src/sprites/bow.png";
     }
 
     launch(): void {
-        this.isShot = true;
+        this.isLaunch = true;
     }
 
 
